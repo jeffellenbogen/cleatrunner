@@ -389,7 +389,6 @@ def moveSnake(snakeIndex6: number):
     # sets the snakePositionofHead for the current snakeIndex to the sum of the current position + direction. So this moves the head right by 1 if the direction is positive and left if the direction is negative.
     snakePositionOfHead[snakeIndex6] = snakePositionOfHead[snakeIndex6] + snakeDirection[snakeIndex6]
 
-
 def getRoundWinner():
     for index3 in range(3):
         if snakeIsAlive[index3] == 1:
@@ -420,7 +419,6 @@ def snakeFuneral(deadSnakeIndex: number):
         snakeTrack[jumpingSnakeIndex] = 1
         spawnSnake(jumpingSnakeIndex)
         showSnake(jumpingSnakeIndex)
-
 
 def on_received_value(name, value):
     if stateOfGame >= 1 and stateOfGame <= 3:
