@@ -1,7 +1,7 @@
 # This is for learning about neoPixel control on a micro:bit using python
 from microbit import *
 import neopixel
-numLEDs1=80
+numLEDs1=81
 numLEDs2=120
 
 color1=(255,0,0)
@@ -35,6 +35,5 @@ def rotate(strip, direction):
 while True:
 	rotate(np,-1)
 	np.show()
-
 
 
