@@ -1,12 +1,15 @@
 # This is for learning about neoPixel control on a micro:bit using python
 from microbit import *
 import neopixel
-numLEDs=80
+numLEDs1=80
+numLEDs2=120
+
 color1=(255,0,0)
 color2=(0,255,0)
 color3=(0,0,255)
 
-np = neopixel.NeoPixel(pin2, numLEDs)
+np = neopixel.NeoPixel(pin2, numLEDs1)
+np2 = neopixel.NeoPixel(pin1, numLEDs2)
 
 for index in range(numLEDs):
 	if (index%3 == 0):
@@ -19,5 +22,17 @@ for index in range(numLEDs):
 np.show()
 
 
+def rotate(strip, direction):
+	length = len(strip)
+	# Rotate pixels left
+	if (direction == -1):
+		tempPixelData = strip[0]
+		for index in range(length-1):
+			strip[index]=strip[index+1]
+		strip(length-1)=tempPixelData	
+
+
+while True:
+	rotate(np,-1):
 
 
