@@ -34,6 +34,7 @@ def rotate(strip, direction):
 
 while True:
 	rotate(np,-1)
-	
+	np.show()
+
 
 
