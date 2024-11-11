@@ -11,7 +11,7 @@ color3=(0,0,255)
 np = neopixel.NeoPixel(pin2, numLEDs1)
 np2 = neopixel.NeoPixel(pin1, numLEDs2)
 
-for index in range(numLEDs):
+for index in range(numLEDs1):
 	if (index%3 == 0):
 		np[index]=color1
 	elif (index%3 == 1):
@@ -29,10 +29,11 @@ def rotate(strip, direction):
 		tempPixelData = strip[0]
 		for index in range(length-1):
 			strip[index]=strip[index+1]
-		strip(length-1)=tempPixelData	
+		strip[length-1]=tempPixelData	
 
 
 while True:
-	rotate(np,-1):
+	rotate(np,-1)
+	
 
 
