@@ -1,6 +1,6 @@
 # cleatrunner
 
-# ToDo
+# ToDos
 * NeoPixel translations
 * local variable names
 * Time
