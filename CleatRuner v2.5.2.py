@@ -1,3 +1,5 @@
+# ********* State functions *********
+
 def state1_run():
     strip0.rotate(1)
     strip1.rotate(-1)
@@ -5,16 +7,35 @@ def state1_run():
     strip0.show()
     strip1.show()
     strip2.show()
-def snakeIcon():
-    basic.show_leds("""
-        . # # # #
-        # # . # #
-        # . . . .
-        # # . . #
-        . # # # .
-        """)
+
 def state1_init2():
     snakeIcon()
+
+def state1_run2():
+    global stateOfGame
+    if currentTotalSnakesAlive() <= 1:
+        state45_init()
+        stateOfGame = 4
+        
+def state3_init():
+    global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame
+    snakeIcon()
+    snakeLength = [8, 5, 8]
+    snakeCanScoreLeft = [1, 1, 1]
+    snakeCanScoreRight = [1, 1, 1]
+    snakeTrack = [2, 0, 1]
+    snakeIsAlive = [1, 1, 1]
+    for index5 in range(3):
+        spawnSnake(index5)
+        showSnake(index5)
+    stateOfGame = 3
+
+def state2_run():
+    global stateOfGame
+    if currentTotalSnakesAlive() <= 1:
+        state45_init()
+        stateOfGame = 5
+
 def state0_run():
     global countdownTimeRemainingms, stateOfGame
     countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
@@ -24,6 +45,7 @@ def state0_run():
         basic.clear_screen()
         state1_init2()
         stateOfGame = 1
+
 def state4_run():
     global countdownTimeRemainingms, stateOfGame
     countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
@@ -35,66 +57,7 @@ def state4_run():
         basic.clear_screen()
         state2_init()
         stateOfGame = 2
-def displaySnakesScore(snakeIndex: number):
-    global range2
-    range2 = strip0.range(0, snakeScore[snakeIndex])
-    range2.show_color(returnSnakeBodyColor(snakeIndex))
-    basic.show_number(snakeScore[snakeIndex])
-# This function determines whichSnake is on a given track that is passed as the trackNum parameter.
-# 
-# Loop through snakeTrack0, 1, 2 and see which snake is currently on the passed trackNum.
-# 
-# Return the snake(0, 1, or 2) for the given track
-# 
-# Error handling, returns -1 if somehow there is no snake on the track in question. NOTE - This might be helpful if there is no snake on a given track because the snake previously occupying a given track has already died in the current round.
-def whichSnakeOnTrack(trackNum: number):
-    for tempSnakeIndex in range(3):
-        # Gets track position for each snake in order...
-        # For example 
-        # In round 2
-        # Snake 0 -> 2
-        # Snake 1 -> 0
-        # Snake 2 -> 1
-        if snakeTrack[tempSnakeIndex] == trackNum:
-            if snakeIsAlive[tempSnakeIndex] != 0:
-                return tempSnakeIndex
-    return -1
-def returnSnakeHeadColor(snakeIndex2: number):
-    if snakeIndex2 == 0:
-        return neopixel.rgb(255, 0, 0)
-    elif snakeIndex2 == 1:
-        return neopixel.rgb(0, 200, 50)
-    else:
-        return neopixel.rgb(100, 0, 255)
-def setTotalScore():
-    global scoreTotal
-    scoreTotal = 0
-    for index2 in range(3):
-        scoreTotal += snakeScore[index2]
-def showSnake(snakeIndex22: number):
-    global tempTrack, currentPixel
-    tempTrack = snakeTrack[snakeIndex22]
-    stripArray[tempTrack].show_color(neopixel.colors(NeoPixelColors.BLACK))
-    if snakeIsAlive[snakeIndex22] != 0:
-        currentPixel = snakePositionOfHead[snakeIndex22]
-        # Sets the current snake's head color
-        stripArray[tempTrack].set_pixel_color(currentPixel, returnSnakeHeadColor(snakeIndex22))
-        for index in range(snakeLength[snakeIndex22] - 1):
-            # If you are moving left, snakeDirection is negative, but we want to be moving to the pixels to the right, so we invert the direction.
-            # 
-            # If you are moving right, snakeDirection is positive, but we want to be moving to the pixels to the left, so we also invert the direction.
-            currentPixel = currentPixel + -1 * snakeDirection[snakeIndex22]
-            # set the current snake's body segments to the body color
-            stripArray[tempTrack].set_pixel_color(currentPixel, returnSnakeBodyColor(snakeIndex22))
-        stripArray[tempTrack].show()
-def flashWinningSnake():
-    global numFlashStates, flashStatePeriodms
-    numFlashStates = 3
-    flashStatePeriodms = 150
-    if int(input.running_time() / flashStatePeriodms) % numFlashStates < 2:
-        showSnake(getRoundWinner())
-    else:
-        stripArray[snakeTrack[getRoundWinner()]].show_color(neopixel.colors(NeoPixelColors.BLACK))
+
 def state0_init():
     global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakePositionOfHead, snakeDirection, snakeScore, snakeTrack, snakeIsAlive, endTimeOfCurrentStatems, stateOfGame
     snakeLength = [5, 8, 8]
@@ -114,6 +77,162 @@ def state0_init():
         showSnake(index4)
     endTimeOfCurrentStatems = input.running_time() + 1000 * preRoundTimerLengthsecs
     stateOfGame = 0
+
+def state9_run():
+    if resetGame:
+        state1_init()
+    else:
+        if int(input.running_time() / flashStatePeriodms) % numFlashStates >= 1:
+            rangeSnake0Proportion.show_color(returnSnakeBodyColor(0))
+            rangeSnake1Proportion.show_color(returnSnakeBodyColor(1))
+            rangeSnake2Proportion.show_color(returnSnakeBodyColor(2))
+        else:
+            if winningSnake == 0:
+                rangeSnake0Proportion.show_color(neopixel.colors(NeoPixelColors.BLACK))
+            elif winningSnake == 1:
+                rangeSnake1Proportion.show_color(neopixel.colors(NeoPixelColors.BLACK))
+            elif winningSnake == 2:
+                rangeSnake2Proportion.show_color(neopixel.colors(NeoPixelColors.BLACK))
+def state9_init():
+    global scoreTotal, endTimeOfCurrentStatems, scoreProportionSnake0, scoreProportionSnake1, scoreProportionSnake2, rangeSnake0Proportion, rangeSnake1Proportion, rangeSnake2Proportion, stateOfGame
+    scoreTotal = 0
+    setTotalScore()
+    endTimeOfCurrentStatems = input.running_time() + 2000
+    scoreProportionSnake0 = Math.ceil(snakeScore[0] / scoreTotal * trackLengths[0])
+    scoreProportionSnake1 = Math.ceil(snakeScore[1] / scoreTotal * trackLengths[0])
+    scoreProportionSnake2 = Math.ceil(snakeScore[2] / scoreTotal * trackLengths[0])
+    rangeSnake0Proportion = strip0.range(0, scoreProportionSnake0)
+    basic.show_number(getWinner())
+    rangeSnake1Proportion = strip0.range(scoreProportionSnake0, scoreProportionSnake1)
+    rangeSnake2Proportion = strip0.range(scoreProportionSnake0 + scoreProportionSnake1,
+        scoreProportionSnake2)
+    stateOfGame = 9
+    strip0.show_color(neopixel.colors(NeoPixelColors.BLACK))
+    strip1.show_color(neopixel.colors(NeoPixelColors.BLACK))
+    strip2.show_color(neopixel.colors(NeoPixelColors.BLACK))
+
+def state5_run():
+    global countdownTimeRemainingms, stateOfGame
+    countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
+    if countdownTimeRemainingms > interRoundTimerLengthsecs * 1000:
+        flashWinningSnake()
+    elif countdownTimeRemainingms >= 0:
+        showCountdownTimer()
+    else:
+        basic.clear_screen()
+        state3_init()
+        stateOfGame = 3
+
+def state3_run():
+    if currentTotalSnakesAlive() <= 1:
+        state9_init()
+
+def state2_init():
+    global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame
+    snakeIcon()
+    snakeLength = [8, 8, 5]
+    snakeCanScoreLeft = [1, 1, 1]
+    snakeCanScoreRight = [1, 1, 1]
+    snakeTrack = [1, 2, 0]
+    snakeIsAlive = [1, 1, 1]
+    for index7 in range(3):
+        spawnSnake(index7)
+        showSnake(index7)
+    stateOfGame = 2
+
+def state1_init():
+    global stateOfGame, resetGame
+    basic.clear_screen()
+    strip0.clear()
+    strip1.clear()
+    strip2.clear()
+    strip0.show_rainbow(290, 350)
+    strip1.show_rainbow(20, 80)
+    strip2.show_rainbow(180, 240)
+    stateOfGame = -1
+    resetGame = False    
+
+def state45_init():
+    global lastRoundedSecOnCountdownTimersecs, endTimeOfCurrentStatems
+    lastRoundedSecOnCountdownTimersecs = 1000 * (roundWinnerFlashTimesecs + interRoundTimerLengthsecs)
+    endTimeOfCurrentStatems = input.running_time() + lastRoundedSecOnCountdownTimersecs
+
+# ********* Utility Functions *********
+def snakeIcon():
+    basic.show_leds("""
+        . # # # #
+        # # . # #
+        # . . . .
+        # # . . #
+        . # # # .
+        """)
+
+def displaySnakesScore(snakeIndex: number):
+    global range2
+    range2 = strip0.range(0, snakeScore[snakeIndex])
+    range2.show_color(returnSnakeBodyColor(snakeIndex))
+    basic.show_number(snakeScore[snakeIndex])
+
+# This function determines whichSnake is on a given track that is passed as the trackNum parameter.
+# 
+# Loop through snakeTrack0, 1, 2 and see which snake is currently on the passed trackNum.
+# 
+# Return the snake(0, 1, or 2) for the given track
+# 
+# Error handling, returns -1 if somehow there is no snake on the track in question. NOTE - This might be helpful if there is no snake on a given track because the snake previously occupying a given track has already died in the current round.
+def whichSnakeOnTrack(trackNum: number):
+    for tempSnakeIndex in range(3):
+        # Gets track position for each snake in order...
+        # For example 
+        # In round 2
+        # Snake 0 -> 2
+        # Snake 1 -> 0
+        # Snake 2 -> 1
+        if snakeTrack[tempSnakeIndex] == trackNum:
+            if snakeIsAlive[tempSnakeIndex] != 0:
+                return tempSnakeIndex
+    return -1
+
+def returnSnakeHeadColor(snakeIndex2: number):
+    if snakeIndex2 == 0:
+        return neopixel.rgb(255, 0, 0)
+    elif snakeIndex2 == 1:
+        return neopixel.rgb(0, 200, 50)
+    else:
+        return neopixel.rgb(100, 0, 255)
+
+def setTotalScore():
+    global scoreTotal
+    scoreTotal = 0
+    for index2 in range(3):
+        scoreTotal += snakeScore[index2]
+
+def showSnake(snakeIndex22: number):
+    global tempTrack, currentPixel
+    tempTrack = snakeTrack[snakeIndex22]
+    stripArray[tempTrack].show_color(neopixel.colors(NeoPixelColors.BLACK))
+    if snakeIsAlive[snakeIndex22] != 0:
+        currentPixel = snakePositionOfHead[snakeIndex22]
+        # Sets the current snake's head color
+        stripArray[tempTrack].set_pixel_color(currentPixel, returnSnakeHeadColor(snakeIndex22))
+        for index in range(snakeLength[snakeIndex22] - 1):
+            # If you are moving left, snakeDirection is negative, but we want to be moving to the pixels to the right, so we invert the direction.
+            # 
+            # If you are moving right, snakeDirection is positive, but we want to be moving to the pixels to the left, so we also invert the direction.
+            currentPixel = currentPixel + -1 * snakeDirection[snakeIndex22]
+            # set the current snake's body segments to the body color
+            stripArray[tempTrack].set_pixel_color(currentPixel, returnSnakeBodyColor(snakeIndex22))
+        stripArray[tempTrack].show()
+
+def flashWinningSnake():
+    global numFlashStates, flashStatePeriodms
+    numFlashStates = 3
+    flashStatePeriodms = 150
+    if int(input.running_time() / flashStatePeriodms) % numFlashStates < 2:
+        showSnake(getRoundWinner())
+    else:
+        stripArray[snakeTrack[getRoundWinner()]].show_color(neopixel.colors(NeoPixelColors.BLACK))
+
 # This function checks whether the current snake that has been sent a command (and therefore passed into this function as a parameter).
 # 
 # For the given snake we need to see if the snake is on Track 0, 1, or 2. The if/else statements are run based on the track of the current snake being evaluated.
@@ -201,32 +320,7 @@ def isPixelBlocked(candPixel: number, candTrack: number):
             elif snakePositionOfHead[blockingSnakeIndex] <= Track21Intersections[currentIntersectionIndex] and snakePositionOfHead[blockingSnakeIndex] + (snakeLength[blockingSnakeIndex] - 1) >= Track21Intersections[currentIntersectionIndex]:
                 return blockingSnakeIndex
     return -1
-def state9_run():
-    if resetGame:
-        state1_init()
-    else:
-        if int(input.running_time() / flashStatePeriodms) % numFlashStates >= 1:
-            rangeSnake0Proportion.show_color(returnSnakeBodyColor(0))
-            rangeSnake1Proportion.show_color(returnSnakeBodyColor(1))
-            rangeSnake2Proportion.show_color(returnSnakeBodyColor(2))
-        else:
-            if winningSnake == 0:
-                rangeSnake0Proportion.show_color(neopixel.colors(NeoPixelColors.BLACK))
-            elif winningSnake == 1:
-                rangeSnake1Proportion.show_color(neopixel.colors(NeoPixelColors.BLACK))
-            elif winningSnake == 2:
-                rangeSnake2Proportion.show_color(neopixel.colors(NeoPixelColors.BLACK))
-def state1_init():
-    global stateOfGame, resetGame
-    basic.clear_screen()
-    strip0.clear()
-    strip1.clear()
-    strip2.clear()
-    strip0.show_rainbow(290, 350)
-    strip1.show_rainbow(20, 80)
-    strip2.show_rainbow(180, 240)
-    stateOfGame = -1
-    resetGame = False
+
 def returnSnakeBodyColor(snakeIndex3: number):
     if snakeIndex3 == 0:
         return neopixel.rgb(200, 0, 200)
@@ -234,22 +328,21 @@ def returnSnakeBodyColor(snakeIndex3: number):
         return neopixel.rgb(120, 160, 0)
     else:
         return neopixel.rgb(0, 100, 255)
+
 def showCountdownTimer():
     global currentRoundedSecOnCountdownTimersecs, lastRoundedSecOnCountdownTimersecs
     currentRoundedSecOnCountdownTimersecs = Math.round(countdownTimeRemainingms / 1000)
     if currentRoundedSecOnCountdownTimersecs != lastRoundedSecOnCountdownTimersecs:
         basic.show_number(currentRoundedSecOnCountdownTimersecs)
         lastRoundedSecOnCountdownTimersecs = currentRoundedSecOnCountdownTimersecs
-def state45_init():
-    global lastRoundedSecOnCountdownTimersecs, endTimeOfCurrentStatems
-    lastRoundedSecOnCountdownTimersecs = 1000 * (roundWinnerFlashTimesecs + interRoundTimerLengthsecs)
-    endTimeOfCurrentStatems = input.running_time() + lastRoundedSecOnCountdownTimersecs
+
 def initLEDs():
     global strip0, strip1, strip2, stripArray
     strip0 = neopixel.create(DigitalPin.P2, trackLengths[0], NeoPixelMode.RGB)
     strip1 = neopixel.create(DigitalPin.P0, trackLengths[1], NeoPixelMode.RGB)
     strip2 = neopixel.create(DigitalPin.P1, trackLengths[2], NeoPixelMode.RGB)
     stripArray = [strip0, strip1, strip2]
+
 def growSnake(snakeIndex4: number):
     # Add 3 to the score for the current snakeIndex. This is called when a snake reaches an egg at either end of their track
     # Add 3 to the score for the current snakeIndex. This is called when a snake reaches an egg at either end of their track
@@ -258,6 +351,7 @@ def growSnake(snakeIndex4: number):
     snakeScore[snakeIndex4] = snakeScore[snakeIndex4] + 3
     snakeLength[snakeIndex4] = snakeLength[snakeIndex4] + 1
 # When using the spawnSnake function, you MUST already set snakeTrack and snakeLength, otherwise things will not work properly.
+
 def spawnSnake(snakeIndex5: number):
     global spawnSuccess, tempTrack, tempDirection, leftEdgeOfSnake, rightEdgeOfSnake, snakeIsBlocked, index52, tempPixel
     spawnSuccess = False
@@ -286,6 +380,7 @@ def spawnSnake(snakeIndex5: number):
             index52 += 1
         if not (snakeIsBlocked):
             spawnSuccess = True
+
 # This helper function is used to alter positionOfHead for the passed snakeIndex (0,1,or 2).
 def moveSnake(snakeIndex6: number):
     # sets the snakePositionofHead for the current snakeIndex to the sum of the current position + direction. So this moves the head right by 1 if the direction is positive and left if the direction is negative.
@@ -293,16 +388,14 @@ def moveSnake(snakeIndex6: number):
     # sets the snakePositionofHead for the current snakeIndex to the sum of the current position + direction. So this moves the head right by 1 if the direction is positive and left if the direction is negative.
     # sets the snakePositionofHead for the current snakeIndex to the sum of the current position + direction. So this moves the head right by 1 if the direction is positive and left if the direction is negative.
     snakePositionOfHead[snakeIndex6] = snakePositionOfHead[snakeIndex6] + snakeDirection[snakeIndex6]
-def state2_run():
-    global stateOfGame
-    if currentTotalSnakesAlive() <= 1:
-        state45_init()
-        stateOfGame = 5
+
+
 def getRoundWinner():
     for index3 in range(3):
         if snakeIsAlive[index3] == 1:
             return index3
     return -1
+
 # Need to deal with potential tie scores for 1st place
 def getWinner():
     global winningSnake
@@ -311,8 +404,10 @@ def getWinner():
         if snakeScore[index6] > snakeScore[winningSnake]:
             winningSnake = index6
     return winningSnake
+
 def currentTotalSnakesAlive():
     return snakeIsAlive[0] + (snakeIsAlive[1] + snakeIsAlive[2])
+
 def snakeFuneral(deadSnakeIndex: number):
     global jumpingSnakeIndex
     showSnake(deadSnakeIndex)
@@ -325,23 +420,7 @@ def snakeFuneral(deadSnakeIndex: number):
         snakeTrack[jumpingSnakeIndex] = 1
         spawnSnake(jumpingSnakeIndex)
         showSnake(jumpingSnakeIndex)
-def state1_run2():
-    global stateOfGame
-    if currentTotalSnakesAlive() <= 1:
-        state45_init()
-        stateOfGame = 4
-def state3_init():
-    global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame
-    snakeIcon()
-    snakeLength = [8, 5, 8]
-    snakeCanScoreLeft = [1, 1, 1]
-    snakeCanScoreRight = [1, 1, 1]
-    snakeTrack = [2, 0, 1]
-    snakeIsAlive = [1, 1, 1]
-    for index5 in range(3):
-        spawnSnake(index5)
-        showSnake(index5)
-    stateOfGame = 3
+
 
 def on_received_value(name, value):
     if stateOfGame >= 1 and stateOfGame <= 3:
@@ -362,6 +441,7 @@ radio.on_received_value(on_received_value)
 # set Track(1->2)Intersections stores the pixel location on track 1 for where it crosses track 2.
 # 
 # set Track(2->1)Intersections stores the pixel location on track 2 for where it crosses track 1.
+
 def initTracks():
     global trackLengths, trackFrictionCoefficients, Track01Intersections, Track10Intersections, Track12Intersections, Track21Intersections
     # Track[0]=80 pixels
@@ -374,6 +454,7 @@ def initTracks():
     Track10Intersections = [33, 50, 89, 106]
     Track12Intersections = [6, 27, 55, 72, 130, 149]
     Track21Intersections = [5, 26, 46, 61, 115, 133]
+
 def isCountdownTimerRunning():
     global countdownTimeRemainingms
     countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
@@ -394,49 +475,6 @@ def on_logo_pressed():
         pass
 input.on_logo_event(TouchButtonEvent.PRESSED, on_logo_pressed)
 
-def state9_init():
-    global scoreTotal, endTimeOfCurrentStatems, scoreProportionSnake0, scoreProportionSnake1, scoreProportionSnake2, rangeSnake0Proportion, rangeSnake1Proportion, rangeSnake2Proportion, stateOfGame
-    scoreTotal = 0
-    setTotalScore()
-    endTimeOfCurrentStatems = input.running_time() + 2000
-    scoreProportionSnake0 = Math.ceil(snakeScore[0] / scoreTotal * trackLengths[0])
-    scoreProportionSnake1 = Math.ceil(snakeScore[1] / scoreTotal * trackLengths[0])
-    scoreProportionSnake2 = Math.ceil(snakeScore[2] / scoreTotal * trackLengths[0])
-    rangeSnake0Proportion = strip0.range(0, scoreProportionSnake0)
-    basic.show_number(getWinner())
-    rangeSnake1Proportion = strip0.range(scoreProportionSnake0, scoreProportionSnake1)
-    rangeSnake2Proportion = strip0.range(scoreProportionSnake0 + scoreProportionSnake1,
-        scoreProportionSnake2)
-    stateOfGame = 9
-    strip0.show_color(neopixel.colors(NeoPixelColors.BLACK))
-    strip1.show_color(neopixel.colors(NeoPixelColors.BLACK))
-    strip2.show_color(neopixel.colors(NeoPixelColors.BLACK))
-def state5_run():
-    global countdownTimeRemainingms, stateOfGame
-    countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
-    if countdownTimeRemainingms > interRoundTimerLengthsecs * 1000:
-        flashWinningSnake()
-    elif countdownTimeRemainingms >= 0:
-        showCountdownTimer()
-    else:
-        basic.clear_screen()
-        state3_init()
-        stateOfGame = 3
-def state3_run():
-    if currentTotalSnakesAlive() <= 1:
-        state9_init()
-def state2_init():
-    global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame
-    snakeIcon()
-    snakeLength = [8, 8, 5]
-    snakeCanScoreLeft = [1, 1, 1]
-    snakeCanScoreRight = [1, 1, 1]
-    snakeTrack = [1, 2, 0]
-    snakeIsAlive = [1, 1, 1]
-    for index7 in range(3):
-        spawnSnake(index7)
-        showSnake(index7)
-    stateOfGame = 2
 # movment value is converted to direction by simply determining if it was positive or negative...
 # positive movement -> direction = 1
 # negative movement -> direction = -1
@@ -445,6 +483,7 @@ def convertMovementToDirection(num: number):
         return 1
     else:
         return -1
+
 # This function is used to adjust snakes' positionOfHead, direction, and growth based on the passed parameters of snakeIndex and movement...
 # 
 # Movement values translate to
@@ -546,6 +585,8 @@ def onCommandReceived(snakeIndex7: number, movement: number):
         return 0
     else:
         return -1
+
+# **************** CODE STARTS HERE *********************        
 currentSnakePositionOfHead = 0
 currentSnakeLength = 0
 newDirection = 0
