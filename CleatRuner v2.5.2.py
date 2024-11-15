@@ -1,63 +1,5 @@
 # ********* State functions *********
 
-def state1_run():
-    strip0.rotate(1)
-    strip1.rotate(-1)
-    strip2.rotate(1)
-    strip0.show()
-    strip1.show()
-    strip2.show()
-
-def state1_init2():
-    snakeIcon()
-
-def state1_run2():
-    global stateOfGame
-    if currentTotalSnakesAlive() <= 1:
-        state45_init()
-        stateOfGame = 4
-        
-def state3_init():
-    global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame
-    snakeIcon()
-    snakeLength = [8, 5, 8]
-    snakeCanScoreLeft = [1, 1, 1]
-    snakeCanScoreRight = [1, 1, 1]
-    snakeTrack = [2, 0, 1]
-    snakeIsAlive = [1, 1, 1]
-    for index5 in range(3):
-        spawnSnake(index5)
-        showSnake(index5)
-    stateOfGame = 3
-
-def state2_run():
-    global stateOfGame
-    if currentTotalSnakesAlive() <= 1:
-        state45_init()
-        stateOfGame = 5
-
-def state0_run():
-    global countdownTimeRemainingms, stateOfGame
-    countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
-    if countdownTimeRemainingms >= 0:
-        showCountdownTimer()
-    else:
-        basic.clear_screen()
-        state1_init2()
-        stateOfGame = 1
-
-def state4_run():
-    global countdownTimeRemainingms, stateOfGame
-    countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
-    if countdownTimeRemainingms > interRoundTimerLengthsecs * 1000:
-        flashWinningSnake()
-    elif countdownTimeRemainingms >= 0:
-        showCountdownTimer()
-    else:
-        basic.clear_screen()
-        state2_init()
-        stateOfGame = 2
-
 def state0_init():
     global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakePositionOfHead, snakeDirection, snakeScore, snakeTrack, snakeIsAlive, endTimeOfCurrentStatems, stateOfGame
     snakeLength = [5, 8, 8]
@@ -78,21 +20,52 @@ def state0_init():
     endTimeOfCurrentStatems = input.running_time() + 1000 * preRoundTimerLengthsecs
     stateOfGame = 0
 
-def state9_run():
-    if resetGame:
-        state1_init()
-    else:
-        if int(input.running_time() / flashStatePeriodms) % numFlashStates >= 1:
-            rangeSnake0Proportion.show_color(returnSnakeBodyColor(0))
-            rangeSnake1Proportion.show_color(returnSnakeBodyColor(1))
-            rangeSnake2Proportion.show_color(returnSnakeBodyColor(2))
-        else:
-            if winningSnake == 0:
-                rangeSnake0Proportion.show_color(neopixel.colors(NeoPixelColors.BLACK))
-            elif winningSnake == 1:
-                rangeSnake1Proportion.show_color(neopixel.colors(NeoPixelColors.BLACK))
-            elif winningSnake == 2:
-                rangeSnake2Proportion.show_color(neopixel.colors(NeoPixelColors.BLACK))
+def state1_init():
+    global stateOfGame, resetGame
+    basic.clear_screen()
+    strip0.clear()
+    strip1.clear()
+    strip2.clear()
+    strip0.show_rainbow(290, 350)
+    strip1.show_rainbow(20, 80)
+    strip2.show_rainbow(180, 240)
+    stateOfGame = -1
+    resetGame = False   
+
+def state1_init2():
+    snakeIcon()
+
+def state2_init():
+    global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame
+    snakeIcon()
+    snakeLength = [8, 8, 5]
+    snakeCanScoreLeft = [1, 1, 1]
+    snakeCanScoreRight = [1, 1, 1]
+    snakeTrack = [1, 2, 0]
+    snakeIsAlive = [1, 1, 1]
+    for index7 in range(3):
+        spawnSnake(index7)
+        showSnake(index7)
+    stateOfGame = 2    
+
+def state3_init():
+    global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame
+    snakeIcon()
+    snakeLength = [8, 5, 8]
+    snakeCanScoreLeft = [1, 1, 1]
+    snakeCanScoreRight = [1, 1, 1]
+    snakeTrack = [2, 0, 1]
+    snakeIsAlive = [1, 1, 1]
+    for index5 in range(3):
+        spawnSnake(index5)
+        showSnake(index5)
+    stateOfGame = 3
+
+def state45_init():
+    global lastRoundedSecOnCountdownTimersecs, endTimeOfCurrentStatems
+    lastRoundedSecOnCountdownTimersecs = 1000 * (roundWinnerFlashTimesecs + interRoundTimerLengthsecs)
+    endTimeOfCurrentStatems = input.running_time() + lastRoundedSecOnCountdownTimersecs
+
 def state9_init():
     global scoreTotal, endTimeOfCurrentStatems, scoreProportionSnake0, scoreProportionSnake1, scoreProportionSnake2, rangeSnake0Proportion, rangeSnake1Proportion, rangeSnake2Proportion, stateOfGame
     scoreTotal = 0
@@ -109,7 +82,54 @@ def state9_init():
     stateOfGame = 9
     strip0.show_color(neopixel.colors(NeoPixelColors.BLACK))
     strip1.show_color(neopixel.colors(NeoPixelColors.BLACK))
-    strip2.show_color(neopixel.colors(NeoPixelColors.BLACK))
+    strip2.show_color(neopixel.colors(NeoPixelColors.BLACK))    
+
+def state0_run():
+    global countdownTimeRemainingms, stateOfGame
+    countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
+    if countdownTimeRemainingms >= 0:
+        showCountdownTimer()
+    else:
+        basic.clear_screen()
+        state1_init2()
+        stateOfGame = 1
+
+def state1_run():
+    strip0.rotate(1)
+    strip1.rotate(-1)
+    strip2.rotate(1)
+    strip0.show()
+    strip1.show()
+    strip2.show()
+
+def state1_run2():
+    global stateOfGame
+    if currentTotalSnakesAlive() <= 1:
+        state45_init()
+        stateOfGame = 4
+     
+
+def state2_run():
+    global stateOfGame
+    if currentTotalSnakesAlive() <= 1:
+        state45_init()
+        stateOfGame = 5
+
+def state3_run():
+    if currentTotalSnakesAlive() <= 1:
+        state9_init()
+ 
+def state4_run():
+    global countdownTimeRemainingms, stateOfGame
+    countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
+    if countdownTimeRemainingms > interRoundTimerLengthsecs * 1000:
+        flashWinningSnake()
+    elif countdownTimeRemainingms >= 0:
+        showCountdownTimer()
+    else:
+        basic.clear_screen()
+        state2_init()
+        stateOfGame = 2
 
 def state5_run():
     global countdownTimeRemainingms, stateOfGame
@@ -123,39 +143,21 @@ def state5_run():
         state3_init()
         stateOfGame = 3
 
-def state3_run():
-    if currentTotalSnakesAlive() <= 1:
-        state9_init()
-
-def state2_init():
-    global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame
-    snakeIcon()
-    snakeLength = [8, 8, 5]
-    snakeCanScoreLeft = [1, 1, 1]
-    snakeCanScoreRight = [1, 1, 1]
-    snakeTrack = [1, 2, 0]
-    snakeIsAlive = [1, 1, 1]
-    for index7 in range(3):
-        spawnSnake(index7)
-        showSnake(index7)
-    stateOfGame = 2
-
-def state1_init():
-    global stateOfGame, resetGame
-    basic.clear_screen()
-    strip0.clear()
-    strip1.clear()
-    strip2.clear()
-    strip0.show_rainbow(290, 350)
-    strip1.show_rainbow(20, 80)
-    strip2.show_rainbow(180, 240)
-    stateOfGame = -1
-    resetGame = False    
-
-def state45_init():
-    global lastRoundedSecOnCountdownTimersecs, endTimeOfCurrentStatems
-    lastRoundedSecOnCountdownTimersecs = 1000 * (roundWinnerFlashTimesecs + interRoundTimerLengthsecs)
-    endTimeOfCurrentStatems = input.running_time() + lastRoundedSecOnCountdownTimersecs
+def state9_run():
+    if resetGame:
+        state1_init()
+    else:
+        if int(input.running_time() / flashStatePeriodms) % numFlashStates >= 1:
+            rangeSnake0Proportion.show_color(returnSnakeBodyColor(0))
+            rangeSnake1Proportion.show_color(returnSnakeBodyColor(1))
+            rangeSnake2Proportion.show_color(returnSnakeBodyColor(2))
+        else:
+            if winningSnake == 0:
+                rangeSnake0Proportion.show_color(neopixel.colors(NeoPixelColors.BLACK))
+            elif winningSnake == 1:
+                rangeSnake1Proportion.show_color(neopixel.colors(NeoPixelColors.BLACK))
+            elif winningSnake == 2:
+                rangeSnake2Proportion.show_color(neopixel.colors(NeoPixelColors.BLACK))
 
 # ********* Utility Functions *********
 def snakeIcon():
