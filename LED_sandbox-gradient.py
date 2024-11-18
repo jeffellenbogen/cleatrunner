@@ -11,11 +11,9 @@ blue=(0,0,255)
 np0 = neoPixelPlus.neoPixelPlus(pin2, numLEDs1)
 np1 = neoPixelPlus.neoPixelPlus(pin1, numLEDs2)
 
-np0.fill(red)
-np0[0]=blue
 
-np1.fill(blue)
-np1[0]=red
+np0.gradient(red,green)
+np1.gradient(blue,red)
 
 
 while True:
