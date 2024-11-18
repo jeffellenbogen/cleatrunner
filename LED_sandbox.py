@@ -19,8 +19,8 @@ np1[0]=red
 
 
 while True:
-	rotate(np0,-1)
-	rotate(np1,1)
+	np0.rotate(-1)
+	np1.rotate(1)
 	np0.show()
 	np1.show()
 
