@@ -11,8 +11,8 @@ green=(0,255,0)
 blue=(0,0,255)
 
 np0 = neoPixelPlus.neoPixelPlus(pin2, numLEDs0)
-np1 = neoPixelPlus.neoPixelPlus(pin1, numLEDs1)
-np2 = neoPixelPlus.neoPixelPlus(pin0, numLEDs2)
+np1 = neoPixelPlus.neoPixelPlus(pin0, numLEDs1)
+np2 = neoPixelPlus.neoPixelPlus(pin1, numLEDs2)
 
 np0.gradient(red,green)
 np1.gradient(blue,red)
