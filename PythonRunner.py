@@ -98,7 +98,7 @@ def state0_run():
         state1_init2()
         stateOfGame = 1
 
-def state1_run():
+def state_neg1_run():
     strip0.rotate(1)
     strip1.rotate(-1)
     strip2.rotate(1)
@@ -107,7 +107,7 @@ def state1_run():
     strip2.show()
 
 
-def state1_run2():
+def state1_run():
     global stateOfGame
     if currentTotalSnakesAlive() <= 1:
         state45_init()
@@ -121,10 +121,14 @@ def state2_run():
     if currentTotalSnakesAlive() <= 1:
         state45_init()
         stateOfGame = 5
+    else:
+        checkAllSnakesForMovement()    
 
 def state3_run():
     if currentTotalSnakesAlive() <= 1:
         state9_init()
+    else:
+        checkAllSnakesForMovement()        
 
 def state4_run():
     global countdownTimeRemainingms, stateOfGame
@@ -458,7 +462,7 @@ def snakeIcon():
 ################################
 
 
-snakeSpeedDelayMS = [0, 15, 10, 5]
+snakeSpeedDelayMS = [0, 20, 10, 1]
 snakeLastCommand = [0,0,0]
 
 def on_received_value(name, value):
@@ -779,11 +783,11 @@ def on_forever():
     # State 5 = Transition from Round 2 to Round 3
     # State 9 = Game is over. Show snake proportional bar graph.
     if stateOfGame == -1:
-        state1_run()
+        state_neg1_run()
     elif stateOfGame == 0:
         state0_run()
     elif stateOfGame == 1:
-        state1_run2()
+        state1_run()
     elif stateOfGame == 2:
         state2_run()
     elif stateOfGame == 3:
