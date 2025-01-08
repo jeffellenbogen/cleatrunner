@@ -106,7 +106,6 @@ def state1_run():
     strip1.show()
     strip2.show()
 
-moveAllSnakes()    
 
 def state1_run2():
     global stateOfGame
@@ -114,7 +113,7 @@ def state1_run2():
         state45_init()
         stateOfGame = 4
     else:
-        moveAllSnakes()
+        checkAllSnakesForMovement()
 
 
 def state2_run():
@@ -387,15 +386,9 @@ def spawnSnake(snakeIndex: number):
 # This helper function is used to alter positionOfHead for the passed snakeIndex (0,1,or 2).
 def moveSnake(snakeIndex: number):
     # sets the snakePositionofHead for the current snakeIndex to the sum of the current position + direction. So this moves the head right by 1 if the direction is positive and left if the direction is negative.
-    # sets the snakePositionofHead for the current snakeIndex to the sum of the current position + direction. So this moves the head right by 1 if the direction is positive and left if the direction is negative.
-    # sets the snakePositionofHead for the current snakeIndex to the sum of the current position + direction. So this moves the head right by 1 if the direction is positive and left if the direction is negative.
-    # sets the snakePositionofHead for the current snakeIndex to the sum of the current position + direction. So this moves the head right by 1 if the direction is positive and left if the direction is negative.
     snakePositionOfHead[snakeIndex] = snakePositionOfHead[snakeIndex] + snakeDirection[snakeIndex]
 
 def growSnake(snakeIndex: number):
-    # Add 3 to the score for the current snakeIndex. This is called when a snake reaches an egg at either end of their track
-    # Add 3 to the score for the current snakeIndex. This is called when a snake reaches an egg at either end of their track
-    # Add 3 to the score for the current snakeIndex. This is called when a snake reaches an egg at either end of their track
     # Add 3 to the score for the current snakeIndex. This is called when a snake reaches an egg at either end of their track
     snakeScore[snakeIndex] = snakeScore[snakeIndex] + 3
     snakeLength[snakeIndex] = snakeLength[snakeIndex] + 1
@@ -538,13 +531,14 @@ def convertMovementToDirection(num: number):
 # 1 = slow move right
 # 2 = medium move right
 # 3 = fast move right
-def moveAllSnakes():
+def checkAllSnakesForMovement():
     global snakeLastCommand, snakeSpeedDelayMS, snakeDirection, snakeLength, snakePositionOfHead, nextSnakeMovementTime
     global snakeScore, snakeIsAlive, snakeCanScoreRight, snakeCanScoreLeft
     currentTime = input.running_time()
     for snakeIndex in range(3):
         if snakeIsAlive[snakeIndex] == 0:
             continue
+        # check to see if it is time to move the current snake    
         if (nextSnakeMovementTime[snakeIndex] > currentTime):
             lastDirection = snakeDirection[snakeIndex]
             newDirection = convertMovementToDirection(snakeLastCommand[snakeIndex])
@@ -557,6 +551,7 @@ def moveAllSnakes():
             #   To accomplish this we set 2 temp variables (currentSnakeLength and currentSnake Position). 
             #   These are used to calculate and set the new snakePositionOfHead at the opposite side of the snake, 
             #   thus we need to know where the head is and how long the snake currently is.
+        
             if lastDirection != newDirection:
                 snakeDirection[snakeIndex] = newDirection
                 # temp variables of currentSnakeLength and currentSnakePosition make is easier to calculate the snake's new positionOfHead 
@@ -569,23 +564,11 @@ def moveAllSnakes():
                 else:
                     # set snake's positionOfHead if it was moving RIGHT
                     snakePositionOfHead[snakeIndex] = currentSnakePositionOfHead - currentSnakeLength + 1
-            # Magnitude = absolute value of the movement parameter
-            # We loop through the next section for each pixel we WANT to TRY to move (based on Magnitude of the movement). 
-            # There is no guarantee that there is enough space on the strip for a snake to move 3 spaces, but it might be able to move 
-            # 1 or 2 spaces.
-
-            # 1. Check to see if the snake can move to an open space and call the moveSnake function.
-            # 2. Check to see if the snake is at the end of the strip and can score at that end of the strip. (The snake can only score/grow 
-            # at an end of the strip that it hasn't scored at last time is scored). If it should score/grow we call growSnake
           
             # Checks for direction and to see if snake has room to continue moving in that direction (not at that edge).
             # Movement = - 1 (LEFT)
             # First IF statement is for moving LEFT and checks position 0 to see if their is room to move.
             # ELSE IF snake is already at LEFT edge AND the snake can score on the LEFT -> growSnake. Set CanScoreLeft to 0 and toggle CanScoreRight to 1.
-            # 
-            # Movement = 1 (RIGHT)
-            # First IF statement is for moving RIGHT and checks position at far right of the track to see if their is room to move.
-            # ELSE IF snake is already at RIGHT edge AND the snake can score on the RIGHT -> growSnake. Set CanScoreLeft to 1 and toggle CanScoreRight to 0.
             if newDirection == -1:
                 if snakePositionOfHead[snakeIndex] != 0:
                     moveSnake(snakeIndex)
@@ -599,6 +582,10 @@ def moveAllSnakes():
                     growSnake(snakeIndex)
                     snakeCanScoreLeft[snakeIndex] = 0
                     snakeCanScoreRight[snakeIndex] = 1
+
+            # Movement = 1 (RIGHT)
+            # First IF statement is for moving RIGHT and checks position at far right of the track to see if their is room to move.
+            # ELSE IF snake is already at RIGHT edge AND the snake can score on the RIGHT -> growSnake. Set CanScoreLeft to 1 and toggle CanScoreRight to 0.        
             elif newDirection == 1:
                 if snakePositionOfHead[snakeIndex] != trackLengths[snakeTrack[snakeIndex]] - 1:
                     moveSnake(snakeIndex)
@@ -612,11 +599,9 @@ def moveAllSnakes():
                     growSnake(snakeIndex)
                     snakeCanScoreLeft[snakeIndex] = 1
                     snakeCanScoreRight[snakeIndex] = 0
-        if snakeIsAlive[snakeIndex] == 1:
-            showSnake(snakeIndex)
-        return 0
-    else:
-        return -1
+            #Snake make have been killed by a collision, check to see if it should be shown
+            if snakeIsAlive[snakeIndex] == 1:
+                showSnake(snakeIndex)
 
 # This function is used to adjust snakes' positionOfHead, direction, and growth based on the passed parameters of snakeIndex and movement...
 # 
