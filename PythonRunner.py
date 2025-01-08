@@ -462,7 +462,7 @@ def snakeIcon():
 ################################
 
 
-snakeSpeedDelayMS = [0, 20, 10, 1]
+snakeSpeedDelayMS = [10000, 1000, 500, 10]
 snakeLastCommand = [0,0,0]
 
 def on_received_value(name, value):
@@ -470,7 +470,8 @@ def on_received_value(name, value):
         tempSnakeIndex = parse_float(name)
         snakeLastCommand[tempSnakeIndex] = value
         nextSnakeMovementTime[tempSnakeIndex]= input.running_time() + snakeSpeedDelayMS[abs(value)]
-
+        serial.write_value("last snakeSpeedDelayMS",snakeSpeedDelayMS[abs(value)])
+        serial.write_value("nextSnakeMovementTime",nextSnakeMovementTime[tempSnakeIndex])
 radio.on_received_value(on_received_value)
 
 
@@ -536,13 +537,14 @@ def convertMovementToDirection(num: number):
 # 2 = medium move right
 # 3 = fast move right
 def checkAllSnakesForMovement():
-    global snakeLastCommand, snakeSpeedDelayMS, snakeDirection, snakeLength, snakePositionOfHead, nextSnakeMovementTime
+    global snakeLastCommand, snakeDirection, snakeLength, snakePositionOfHead, nextSnakeMovementTime
     global snakeScore, snakeIsAlive, snakeCanScoreRight, snakeCanScoreLeft
     currentTime = input.running_time()
     for snakeIndex in range(3):
         if snakeIsAlive[snakeIndex] == 0:
             continue
-        # check to see if it is time to move the current snake    
+        # check to see if it is time to move the current snake 
+        serial.write_value(" currentTime", currentTime)   
         if (nextSnakeMovementTime[snakeIndex] > currentTime):
             lastDirection = snakeDirection[snakeIndex]
             newDirection = convertMovementToDirection(snakeLastCommand[snakeIndex])
