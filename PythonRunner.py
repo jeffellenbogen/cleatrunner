@@ -464,12 +464,13 @@ def snakeIcon():
 
 snakeSpeedDelayMS = [10000, 1000, 500, 10]
 snakeLastCommand = [0,0,0]
+snakeLastMoveTimeMS = [0,0,0]
 
 def on_received_value(name, value):
     if stateOfGame >= 1 and stateOfGame <= 3:
         tempSnakeIndex = parse_float(name)
         snakeLastCommand[tempSnakeIndex] = value
-        nextSnakeMovementTime[tempSnakeIndex]= input.running_time() + snakeSpeedDelayMS[abs(value)]
+        nextSnakeMovementTime[tempSnakeIndex]= snakeLastMoveTimeMS[tempSnakeIndex] + snakeSpeedDelayMS[abs(value)]
         serial.write_value("last snakeSpeedDelayMS",snakeSpeedDelayMS[abs(value)])
         serial.write_value("nextSnakeMovementTime",nextSnakeMovementTime[tempSnakeIndex])
 radio.on_received_value(on_received_value)
@@ -577,6 +578,7 @@ def checkAllSnakesForMovement():
             # ELSE IF snake is already at LEFT edge AND the snake can score on the LEFT -> growSnake. Set CanScoreLeft to 0 and toggle CanScoreRight to 1.
             if newDirection == -1:
                 if snakePositionOfHead[snakeIndex] != 0:
+                    snakeLastMoveTimeMS[snakeIndex]=input.running_time()
                     moveSnake(snakeIndex)
                     blockingSnakeIndex = isPixelBlocked(snakePositionOfHead[snakeIndex], snakeTrack[snakeIndex])
                     if blockingSnakeIndex != -1:
@@ -594,6 +596,7 @@ def checkAllSnakesForMovement():
             # ELSE IF snake is already at RIGHT edge AND the snake can score on the RIGHT -> growSnake. Set CanScoreLeft to 1 and toggle CanScoreRight to 0.        
             elif newDirection == 1:
                 if snakePositionOfHead[snakeIndex] != trackLengths[snakeTrack[snakeIndex]] - 1:
+                    snakeLastMoveTimeMS[snakeIndex]=input.running_time()
                     moveSnake(snakeIndex)
                     blockingSnakeIndex = isPixelBlocked(snakePositionOfHead[snakeIndex], snakeTrack[snakeIndex])
                     if blockingSnakeIndex != -1:
@@ -647,15 +650,11 @@ def onCommandReceived(snakeIndex: number, movement: number):
             currentSnakePositionOfHead = snakePositionOfHead[snakeIndex]
             if lastDirection == -1:
                 # set snake's positionOfHead if it was moving LEFT
-                # set snake's positionOfHead if it was moving LEFT
-                # set snake's positionOfHead if it was moving LEFT
-                # set snake's positionOfHead if it was moving LEFT
+
                 snakePositionOfHead[snakeIndex] = currentSnakePositionOfHead + currentSnakeLength - 1
             else:
                 # set snake's positionOfHead if it was moving RIGHT
-                # set snake's positionOfHead if it was moving RIGHT
-                # set snake's positionOfHead if it was moving RIGHT
-                # set snake's positionOfHead if it was moving RIGHT
+  
                 snakePositionOfHead[snakeIndex] = currentSnakePositionOfHead - currentSnakeLength + 1
         # Magnitude = absolute value of the movement parameter
         # We loop through the next section for each pixel we WANT to TRY to move (based on Magnitude of the movement). There is no guarantee that there is enough space on the strip for a snake to move 3 spaces, but it might be able to move 1 or 2 spaces.
