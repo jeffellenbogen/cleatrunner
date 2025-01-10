@@ -392,7 +392,7 @@ def moveSnake(snakeIndex: number):
     # sets the snakePositionofHead for the current snakeIndex to the sum of the current position + direction. So this moves the head right by 1 if the direction is positive and left if the direction is negative.
     global snakeLastMoveTimeMS
     snakePositionOfHead[snakeIndex] = snakePositionOfHead[snakeIndex] + snakeDirection[snakeIndex]
-    snakeLastMoveTimeMS[snakeIndex]=input.running_time()
+    snakeLastMoveTimeMS[snakeIndex] = input.running_time()
 
 def growSnake(snakeIndex: number):
     # Add 3 to the score for the current snakeIndex. This is called when a snake reaches an egg at either end of their track
