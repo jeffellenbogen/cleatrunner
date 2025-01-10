@@ -390,7 +390,9 @@ def spawnSnake(snakeIndex: number):
 # This helper function is used to alter positionOfHead for the passed snakeIndex (0,1,or 2).
 def moveSnake(snakeIndex: number):
     # sets the snakePositionofHead for the current snakeIndex to the sum of the current position + direction. So this moves the head right by 1 if the direction is positive and left if the direction is negative.
+    global snakeLastMoveTimeMS
     snakePositionOfHead[snakeIndex] = snakePositionOfHead[snakeIndex] + snakeDirection[snakeIndex]
+    snakeLastMoveTimeMS[snakeIndex]=input.running_time()
 
 def growSnake(snakeIndex: number):
     # Add 3 to the score for the current snakeIndex. This is called when a snake reaches an egg at either end of their track
@@ -467,6 +469,7 @@ snakeLastCommand = [0,0,0]
 snakeLastMoveTimeMS = [0,0,0]
 
 def on_received_value(name, value):
+    global snakeLastMoveTimeMS, snakeSpeedDelayMS, snakeLastCommand, nextSnakeMovementTime
     if stateOfGame >= 1 and stateOfGame <= 3:
         tempSnakeIndex = parse_float(name)
         snakeLastCommand[tempSnakeIndex] = value
@@ -578,7 +581,6 @@ def checkAllSnakesForMovement():
             # ELSE IF snake is already at LEFT edge AND the snake can score on the LEFT -> growSnake. Set CanScoreLeft to 0 and toggle CanScoreRight to 1.
             if newDirection == -1:
                 if snakePositionOfHead[snakeIndex] != 0:
-                    snakeLastMoveTimeMS[snakeIndex]=input.running_time()
                     moveSnake(snakeIndex)
                     blockingSnakeIndex = isPixelBlocked(snakePositionOfHead[snakeIndex], snakeTrack[snakeIndex])
                     if blockingSnakeIndex != -1:
@@ -596,7 +598,6 @@ def checkAllSnakesForMovement():
             # ELSE IF snake is already at RIGHT edge AND the snake can score on the RIGHT -> growSnake. Set CanScoreLeft to 1 and toggle CanScoreRight to 0.        
             elif newDirection == 1:
                 if snakePositionOfHead[snakeIndex] != trackLengths[snakeTrack[snakeIndex]] - 1:
-                    snakeLastMoveTimeMS[snakeIndex]=input.running_time()
                     moveSnake(snakeIndex)
                     blockingSnakeIndex = isPixelBlocked(snakePositionOfHead[snakeIndex], snakeTrack[snakeIndex])
                     if blockingSnakeIndex != -1:
