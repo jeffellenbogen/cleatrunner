@@ -67,7 +67,7 @@ def state45_init():
     endTimeOfCurrentStatems = input.running_time() + lastRoundedSecOnCountdownTimersecs    
 
 def state9_init():
-    global scoreTotal, endTimeOfCurrentStatems, scoreProportionSnake0, scoreProportionSnake1, scoreProportionSnake2, rangeSnake0Proportion, 
+    global scoreTotal, endTimeOfCurrentStatems, scoreProportionSnake0, scoreProportionSnake1, scoreProportionSnake2, rangeSnake0Proportion
     global rangeSnake1Proportion, rangeSnake2Proportion, stateOfGame, strip0, strip1, strip2
     scoreTotal = 0
     setTotalScore()
@@ -253,7 +253,7 @@ def whichSnakeOnTrack(trackNum: number):
 
 def isPixelBlocked(candPixel: number, candTrack: number):
     global Track01Intersections, Track10Intersections, Track12Intersections, Track21Intersections, snakeIsAlive, snakeDirection
-    global snakePositionOfHead,
+    global snakePositionOfHead
     if candTrack == 0:
         currentIntersectionIndex = Track01Intersections.index_of(candPixel)
         if currentIntersectionIndex != -1:
@@ -367,7 +367,7 @@ def flashWinningSnake():
 ################################
 # When using the spawnSnake function, you MUST already set snakeTrack and snakeLength, otherwise things will not work properly.
 def spawnSnake(snakeIndex: number):
-    global spawnSuccess, tempTrack, tempDirection, leftEdgeOfSnake, rightEdgeOfSnake, snakeIsBlocked, index52, tempPixel
+    global spawnSuccess, tempTrack, tempDirection, leftEdgeOfSnake, rightEdgeOfSnake, snakeIsBlocked, tempPixel
     spawnSuccess = False
     while not (spawnSuccess):
         tempTrack = snakeTrack[snakeIndex]
