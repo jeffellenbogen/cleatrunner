@@ -21,7 +21,7 @@ def state0_init():
     stateOfGame = 0
 
 def state1_init():
-    global stateOfGame, resetGame
+    global stateOfGame, resetGame, strip0, strip1, strip2
     basic.clear_screen()
     strip0.clear()
     strip1.clear()
@@ -67,7 +67,8 @@ def state45_init():
     endTimeOfCurrentStatems = input.running_time() + lastRoundedSecOnCountdownTimersecs    
 
 def state9_init():
-    global scoreTotal, endTimeOfCurrentStatems, scoreProportionSnake0, scoreProportionSnake1, scoreProportionSnake2, rangeSnake0Proportion, rangeSnake1Proportion, rangeSnake2Proportion, stateOfGame
+    global scoreTotal, endTimeOfCurrentStatems, scoreProportionSnake0, scoreProportionSnake1, scoreProportionSnake2, rangeSnake0Proportion, 
+    global rangeSnake1Proportion, rangeSnake2Proportion, stateOfGame, strip0, strip1, strip2
     scoreTotal = 0
     setTotalScore()
     endTimeOfCurrentStatems = input.running_time() + 2000
@@ -99,6 +100,7 @@ def state0_run():
         stateOfGame = 1
 
 def state_neg1_run():
+    global strip0, strip1, strip2
     strip0.rotate(1)
     strip1.rotate(-1)
     strip2.rotate(1)
@@ -131,7 +133,7 @@ def state3_run():
         checkAllSnakesForMovement()        
 
 def state4_run():
-    global countdownTimeRemainingms, stateOfGame
+    global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems, interRoundTimerLengthsecs
     countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
     if countdownTimeRemainingms > interRoundTimerLengthsecs * 1000:
         flashWinningSnake()
@@ -144,7 +146,7 @@ def state4_run():
 
 
 def state5_run():
-    global countdownTimeRemainingms, stateOfGame
+    global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems, interRoundTimerLengthsecs
     countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
     if countdownTimeRemainingms > interRoundTimerLengthsecs * 1000:
         flashWinningSnake()
@@ -156,6 +158,7 @@ def state5_run():
         stateOfGame = 3
 
 def state9_run():
+    global rangeSnake0Proportion, rangeSnake1Proportion, rangeSnake2Proportion, winningSnake
     if resetGame:
         state1_init()
     else:
@@ -177,18 +180,19 @@ def state9_run():
 ################################
 
 def setTotalScore():
-    global scoreTotal
+    global scoreTotal, snakeScore
     scoreTotal = 0
     for index2 in range(3):
         scoreTotal += snakeScore[index2]
 
 def displaySnakesScore(snakeIndex: number):
-    global range2
+    global range2, strip0
     range2 = strip0.range(0, snakeScore[snakeIndex])
     range2.show_color(returnSnakeBodyColor(snakeIndex))
     basic.show_number(snakeScore[snakeIndex])
 
 def getRoundWinner():
+    global snakeIsAlive
     for index in range(3):
         if snakeIsAlive[index] == 1:
             return index
@@ -196,7 +200,7 @@ def getRoundWinner():
 
 # Need to deal with potential tie scores for 1st place
 def getWinner():
-    global winningSnake
+    global winningSnake, snakeScore
     winningSnake = 0
     for index in range(3):
         if snakeScore[index] > snakeScore[winningSnake]:
@@ -204,6 +208,7 @@ def getWinner():
     return winningSnake
 
 def currentTotalSnakesAlive():
+    global snakeIsAlive
     return snakeIsAlive[0] + (snakeIsAlive[1] + snakeIsAlive[2])    
 
 ################################
@@ -217,6 +222,7 @@ def currentTotalSnakesAlive():
 # 
 # Error handling, returns -1 if somehow there is no snake on the track in question. NOTE - This might be helpful if there is no snake on a given track because the snake previously occupying a given track has already died in the current round.
 def whichSnakeOnTrack(trackNum: number):
+    global snakeTrack, snakeIsAlive
     for tempSnakeIndex in range(3):
         # Gets track position for each snake in order...
         # For example 
@@ -246,6 +252,8 @@ def whichSnakeOnTrack(trackNum: number):
 # 2 -> blocked by snake 2
 
 def isPixelBlocked(candPixel: number, candTrack: number):
+    global Track01Intersections, Track10Intersections, Track12Intersections, Track21Intersections, snakeIsAlive, snakeDirection
+    global snakePositionOfHead,
     if candTrack == 0:
         currentIntersectionIndex = Track01Intersections.index_of(candPixel)
         if currentIntersectionIndex != -1:
@@ -390,17 +398,18 @@ def spawnSnake(snakeIndex: number):
 # This helper function is used to alter positionOfHead for the passed snakeIndex (0,1,or 2).
 def moveSnake(snakeIndex: number):
     # sets the snakePositionofHead for the current snakeIndex to the sum of the current position + direction. So this moves the head right by 1 if the direction is positive and left if the direction is negative.
-    global snakeLastMoveTimeMS
+    global snakeLastMoveTimeMS, snakePositionOfHead, snakeDirection
     snakePositionOfHead[snakeIndex] = snakePositionOfHead[snakeIndex] + snakeDirection[snakeIndex]
     snakeLastMoveTimeMS[snakeIndex] = input.running_time()
 
 def growSnake(snakeIndex: number):
     # Add 3 to the score for the current snakeIndex. This is called when a snake reaches an egg at either end of their track
+    global snakeScore, snakeLength
     snakeScore[snakeIndex] = snakeScore[snakeIndex] + 3
     snakeLength[snakeIndex] = snakeLength[snakeIndex] + 1
 
 def snakeFuneral(deadSnakeIndex: number):
-    global jumpingSnakeIndex
+    global jumpingSnakeIndex, snakeTrack, snakeIsAlive, snakeLength
     showSnake(deadSnakeIndex)
     if snakeTrack[deadSnakeIndex] == 1:
         jumpingSnakeIndex = whichSnakeOnTrack(0)
@@ -440,7 +449,7 @@ def showCountdownTimer():
         lastRoundedSecOnCountdownTimersecs = currentRoundedSecOnCountdownTimersecs
 
 def isCountdownTimerRunning():
-    global countdownTimeRemainingms
+    global countdownTimeRemainingms, endTimeOfCurrentStatems
     countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
     if countdownTimeRemainingms > 0:
         basic.show_number(Math.round(countdownTimeRemainingms / 1000))
@@ -508,7 +517,7 @@ def initTracks():
 
 
 def on_logo_pressed():
-    global resetGame
+    global resetGame, stateOfGame
     if stateOfGame == -1:
         state0_init()
     elif stateOfGame >= 9:
@@ -613,103 +622,7 @@ def checkAllSnakesForMovement():
             if snakeIsAlive[snakeIndex] == 1:
                 showSnake(snakeIndex)
 
-# This function is used to adjust snakes' positionOfHead, direction, and growth based on the passed parameters of snakeIndex and movement...
-# 
-# Movement values translate to
-# -3 = fast move left
-# -2 = medium move left
-# -1 = slow move left
-# 0 = no movement
-# 1 = slow move right
-# 2 = medium move right
-# 3 = fast move right
-def onCommandReceived(snakeIndex: number, movement: number):
-    global lastDirection, newDirection, currentSnakeLength, currentSnakePositionOfHead, blockingSnakeIndex
-    if stateOfGame >= 1 and stateOfGame <= 3:
-        # Check to see if the controller has sent movement date for a snake that is dead.
-        # If dead, return -1 (to avoid processing commands)
-        # 
-        # If alive, then process the command
-        if snakeIsAlive[snakeIndex] == 0:
-            return -1
-        lastDirection = snakeDirection[snakeIndex]
-        newDirection = convertMovementToDirection(movement)
-        # We are using the movement parameter for TWO things...
-        # 1. Direction
-        # 2. Magnitude of movement
-        # 
-        # Compare the lastDirection the snake was moving (stored in snakeDirection array) to the newDirection returned by passing movement parameter from onCommandReceived into conventMovementToDirection function.
-        # 
-        # If direction has changed TWO things need to happen...
-        # 1. Set the newDirection into snakeDirection array.
-        # 
-        # 2. The head flips to the other side of the snake when direction changes. To accomplish this we set 2 temp variables (currentSnakeLength and currentSnake Position). These are used to calculate and set the new snakePositionOfHead at the opposite side of the snake, thus we need to know where the head is and how long the snake currently is.
-        if lastDirection != newDirection:
-            snakeDirection[snakeIndex] = newDirection
-            # temp variables of currentSnakeLength and currentSnakePosition make is easier to calculate the snake's new positionOfHead depended on whether the snake is changing direction or not.
-            currentSnakeLength = snakeLength[snakeIndex]
-            currentSnakePositionOfHead = snakePositionOfHead[snakeIndex]
-            if lastDirection == -1:
-                # set snake's positionOfHead if it was moving LEFT
 
-                snakePositionOfHead[snakeIndex] = currentSnakePositionOfHead + currentSnakeLength - 1
-            else:
-                # set snake's positionOfHead if it was moving RIGHT
-  
-                snakePositionOfHead[snakeIndex] = currentSnakePositionOfHead - currentSnakeLength + 1
-        # Magnitude = absolute value of the movement parameter
-        # We loop through the next section for each pixel we WANT to TRY to move (based on Magnitude of the movement). There is no guarantee that there is enough space on the strip for a snake to move 3 spaces, but it might be able to move 1 or 2 spaces.
-        # 
-        # By running through this section step-by-step we can...
-        # 1. Check to see if the snake can move to an open space and call the moveSnake function.
-        # 2. Check to see if the snake is at the end of the strip and can score at that end of the strip. (The snake can only score/grow at an end of the strip that it hasn't scored at last time is scored). If it should score/grow we call growSnake
-        for index8 in range(abs(movement)):
-            # Checks for direction and to see if snake has room to continue moving in that direction (not at that edge).
-            # 
-            # Movement = - 1 (LEFT)
-            # First IF statement is for moving LEFT and checks position 0 to see if their is room to move.
-            # ELSE IF snake is already at LEFT edge AND the snake can score on the LEFT -> growSnake. Set CanScoreLeft to 0 and toggle CanScoreRight to 1.
-            # 
-            # Movement = 1 (RIGHT)
-            # First IF statement is for moving RIGHT and checks position at far right of the track to see if their is room to move.
-            # ELSE IF snake is already at RIGHT edge AND the snake can score on the RIGHT -> growSnake. Set CanScoreLeft to 1 and toggle CanScoreRight to 0.
-            if newDirection == -1:
-                if snakePositionOfHead[snakeIndex] != 0:
-                    moveSnake(snakeIndex)
-                    blockingSnakeIndex = isPixelBlocked(snakePositionOfHead[snakeIndex], snakeTrack[snakeIndex])
-                    if blockingSnakeIndex != -1:
-                        # Add 2 to the score of the blocking snake after a collision has occurred.
-                        # Add 2 to the score of the blocking snake after a collision has occurred.
-                        # Add 2 to the score of the blocking snake after a collision has occurred.
-                        # Add 2 to the score of the blocking snake after a collision has occurred.
-                        snakeScore[blockingSnakeIndex] = snakeScore[blockingSnakeIndex] + 2
-                        snakeIsAlive[snakeIndex] = 0
-                        snakeFuneral(snakeIndex)
-                elif snakeCanScoreLeft[snakeIndex] == 1:
-                    growSnake(snakeIndex)
-                    snakeCanScoreLeft[snakeIndex] = 0
-                    snakeCanScoreRight[snakeIndex] = 1
-            elif newDirection == 1:
-                if snakePositionOfHead[snakeIndex] != trackLengths[snakeTrack[snakeIndex]] - 1:
-                    moveSnake(snakeIndex)
-                    blockingSnakeIndex = isPixelBlocked(snakePositionOfHead[snakeIndex], snakeTrack[snakeIndex])
-                    if blockingSnakeIndex != -1:
-                        # Add 2 to the score of the blocking snake after a collision has occurred.
-                        # Add 2 to the score of the blocking snake after a collision has occurred.
-                        # Add 2 to the score of the blocking snake after a collision has occurred.
-                        # Add 2 to the score of the blocking snake after a collision has occurred.
-                        snakeScore[blockingSnakeIndex] = snakeScore[blockingSnakeIndex] + 2
-                        snakeIsAlive[snakeIndex] = 0
-                        snakeFuneral(snakeIndex)
-                elif snakeCanScoreRight[snakeIndex] == 1:
-                    growSnake(snakeIndex)
-                    snakeCanScoreLeft[snakeIndex] = 1
-                    snakeCanScoreRight[snakeIndex] = 0
-        if snakeIsAlive[snakeIndex] == 1:
-            showSnake(snakeIndex)
-        return 0
-    else:
-        return -1
 
 currentSnakePositionOfHead = 0
 currentSnakeLength = 0
@@ -721,7 +634,6 @@ scoreProportionSnake0 = 0
 trackFrictionCoefficients: List[number] = []
 jumpingSnakeIndex = 0
 tempPixel = 0
-index52 = 0
 snakeIsBlocked = False
 rightEdgeOfSnake = 0
 leftEdgeOfSnake = 0
