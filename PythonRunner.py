@@ -401,7 +401,8 @@ def moveSnake(snakeIndex: number):
     global snakeLastMoveTimeMS, snakePositionOfHead, snakeDirection
     snakePositionOfHead[snakeIndex] = snakePositionOfHead[snakeIndex] + snakeDirection[snakeIndex]
     snakeLastMoveTimeMS[snakeIndex] = input.running_time()
-
+    serial.write_value("snake # ",snakeIndex)
+    serial.write_value("time moved: ",snakeLastMoveTimeMS[snakeIndex])
 def growSnake(snakeIndex: number):
     # Add 3 to the score for the current snakeIndex. This is called when a snake reaches an egg at either end of their track
     global snakeScore, snakeLength
@@ -482,8 +483,8 @@ def on_received_value(name, value):
     if stateOfGame >= 1 and stateOfGame <= 3:
         tempSnakeIndex = parse_float(name)
         snakeLastCommand[tempSnakeIndex] = value
-        nextSnakeMovementTime[tempSnakeIndex]= snakeLastMoveTimeMS[tempSnakeIndex] + snakeSpeedDelayMS[abs(value)]
-        serial.write_value("last snakeSpeedDelayMS",snakeSpeedDelayMS[abs(value)])
+        nextSnakeMovementTime[tempSnakeIndex] = snakeLastMoveTimeMS[tempSnakeIndex] + snakeSpeedDelayMS[abs(value)]
+        serial.write_value("snakeLastMoveTimeMS",snakeLastMoveTimeMS[tempSnakeIndex])
         serial.write_value("nextSnakeMovementTime",nextSnakeMovementTime[tempSnakeIndex])
 radio.on_received_value(on_received_value)
 
@@ -558,7 +559,7 @@ def checkAllSnakesForMovement():
             continue
         # check to see if it is time to move the current snake 
         serial.write_value(" currentTime", currentTime)   
-        if (nextSnakeMovementTime[snakeIndex] > currentTime):
+        if (nextSnakeMovementTime[snakeIndex] <= currentTime):
             lastDirection = snakeDirection[snakeIndex]
             newDirection = convertMovementToDirection(snakeLastCommand[snakeIndex])
             
