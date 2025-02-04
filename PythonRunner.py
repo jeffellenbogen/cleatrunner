@@ -398,10 +398,10 @@ def spawnSnake(snakeIndex: number):
 # This helper function is used to alter positionOfHead for the passed snakeIndex (0,1,or 2).
 def moveSnake(snakeIndex: number):
     # sets the snakePositionofHead for the current snakeIndex to the sum of the current position + direction. So this moves the head right by 1 if the direction is positive and left if the direction is negative.
-    global nextSnakeMovementTime, snakeLastMoveTimeMS, snakePositionOfHead, snakeDirection, snakeSpeedDelayMS
+    global nextSnakeMovementTime, snakeLastMoveTimeMS, snakePositionOfHead, snakeDirection, snakeSpeedDelayMS, snakeLastCommand
     snakePositionOfHead[snakeIndex] = snakePositionOfHead[snakeIndex] + snakeDirection[snakeIndex]
     snakeLastMoveTimeMS[snakeIndex] = input.running_time()
-    nextSnakeMovementTime[tempSnakeIndex] = snakeLastMoveTimeMS[tempSnakeIndex] + snakeSpeedDelayMS[abs(value)]
+    nextSnakeMovementTime[snakeIndex] = snakeLastMoveTimeMS[snakeIndex] + snakeSpeedDelayMS[abs(snakeLastCommand[snakeIndex])]
     serial.write_value("snake # ",snakeIndex)
     serial.write_value("time moved: ",snakeLastMoveTimeMS[snakeIndex])
     serial.write_value("next time to move: ",nextSnakeMovementTime[snakeIndex])    
