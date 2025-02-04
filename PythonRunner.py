@@ -477,7 +477,7 @@ def snakeIcon():
 ################################
 
 
-snakeSpeedDelayMS = [10000, 25, 10, 1]
+snakeSpeedDelayMS = [10000, 60, 30, 1]
 snakeLastCommand = [0,0,0]
 snakeLastMoveTimeMS = [0,0,0]
 
