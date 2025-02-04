@@ -398,11 +398,14 @@ def spawnSnake(snakeIndex: number):
 # This helper function is used to alter positionOfHead for the passed snakeIndex (0,1,or 2).
 def moveSnake(snakeIndex: number):
     # sets the snakePositionofHead for the current snakeIndex to the sum of the current position + direction. So this moves the head right by 1 if the direction is positive and left if the direction is negative.
-    global snakeLastMoveTimeMS, snakePositionOfHead, snakeDirection
+    global nextSnakeMovementTime, snakeLastMoveTimeMS, snakePositionOfHead, snakeDirection, snakeSpeedDelayMS
     snakePositionOfHead[snakeIndex] = snakePositionOfHead[snakeIndex] + snakeDirection[snakeIndex]
     snakeLastMoveTimeMS[snakeIndex] = input.running_time()
+    nextSnakeMovementTime[tempSnakeIndex] = snakeLastMoveTimeMS[tempSnakeIndex] + snakeSpeedDelayMS[abs(value)]
     serial.write_value("snake # ",snakeIndex)
     serial.write_value("time moved: ",snakeLastMoveTimeMS[snakeIndex])
+    serial.write_value("next time to move: ",nextSnakeMovementTime[snakeIndex])    
+
 def growSnake(snakeIndex: number):
     # Add 3 to the score for the current snakeIndex. This is called when a snake reaches an egg at either end of their track
     global snakeScore, snakeLength
@@ -556,6 +559,9 @@ def checkAllSnakesForMovement():
     currentTime = input.running_time()
     for snakeIndex in range(3):
         if snakeIsAlive[snakeIndex] == 0:
+            continue
+        # check to see if the currentSnake is moving or not. If it is zero, continue.
+        if snakeLastCommand[snakeIndex] == 0:
             continue
         # check to see if it is time to move the current snake 
         serial.write_value(" currentTime", currentTime)   
