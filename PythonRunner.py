@@ -402,9 +402,9 @@ def moveSnake(snakeIndex: number):
     snakePositionOfHead[snakeIndex] = snakePositionOfHead[snakeIndex] + snakeDirection[snakeIndex]
     snakeLastMoveTimeMS[snakeIndex] = input.running_time()
     nextSnakeMovementTime[snakeIndex] = snakeLastMoveTimeMS[snakeIndex] + snakeSpeedDelayMS[abs(snakeLastCommand[snakeIndex])]
-    serial.write_value("snake # ",snakeIndex)
-    serial.write_value("time moved: ",snakeLastMoveTimeMS[snakeIndex])
-    serial.write_value("next time to move: ",nextSnakeMovementTime[snakeIndex])    
+    # serial.write_value("snake # ",snakeIndex)
+    # serial.write_value("time moved: ",snakeLastMoveTimeMS[snakeIndex])
+    # serial.write_value("next time to move: ",nextSnakeMovementTime[snakeIndex])    
 
 def growSnake(snakeIndex: number):
     # Add 3 to the score for the current snakeIndex. This is called when a snake reaches an egg at either end of their track
@@ -477,7 +477,7 @@ def snakeIcon():
 ################################
 
 
-snakeSpeedDelayMS = [10000, 100, 40, 1]
+snakeSpeedDelayMS = [10000, 25, 10, 1]
 snakeLastCommand = [0,0,0]
 snakeLastMoveTimeMS = [0,0,0]
 
@@ -487,8 +487,8 @@ def on_received_value(name, value):
         tempSnakeIndex = parse_float(name)
         snakeLastCommand[tempSnakeIndex] = value
         nextSnakeMovementTime[tempSnakeIndex] = snakeLastMoveTimeMS[tempSnakeIndex] + snakeSpeedDelayMS[abs(value)]
-        serial.write_value("snakeLastMoveTimeMS",snakeLastMoveTimeMS[tempSnakeIndex])
-        serial.write_value("nextSnakeMovementTime",nextSnakeMovementTime[tempSnakeIndex])
+        # serial.write_value("snakeLastMoveTimeMS",snakeLastMoveTimeMS[tempSnakeIndex])
+        # serial.write_value("nextSnakeMovementTime",nextSnakeMovementTime[tempSnakeIndex])
 radio.on_received_value(on_received_value)
 
 
@@ -564,7 +564,7 @@ def checkAllSnakesForMovement():
         if snakeLastCommand[snakeIndex] == 0:
             continue
         # check to see if it is time to move the current snake 
-        serial.write_value(" currentTime", currentTime)   
+        # serial.write_value(" currentTime", currentTime)   
         if (nextSnakeMovementTime[snakeIndex] <= currentTime):
             lastDirection = snakeDirection[snakeIndex]
             newDirection = convertMovementToDirection(snakeLastCommand[snakeIndex])
