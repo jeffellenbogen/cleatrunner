@@ -477,7 +477,7 @@ def snakeIcon():
 ################################
 
 
-snakeSpeedDelayMS = [10000, 60, 30, 1]
+snakeSpeedDelayMS = [10000, 50, 35, 20]
 snakeLastCommand = [0,0,0]
 snakeLastMoveTimeMS = [0,0,0]
 
@@ -553,9 +553,18 @@ def convertMovementToDirection(num: number):
 # 1 = slow move right
 # 2 = medium move right
 # 3 = fast move right
+debugPinState = 0
+
 def checkAllSnakesForMovement():
     global snakeLastCommand, snakeDirection, snakeLength, snakePositionOfHead, nextSnakeMovementTime
-    global snakeScore, snakeIsAlive, snakeCanScoreRight, snakeCanScoreLeft
+    global snakeScore, snakeIsAlive, snakeCanScoreRight, snakeCanScoreLeft, debugPinState
+    if debugPinState:
+        debugPinState = 0
+    else:
+        debugPinState = 1
+    pins.digital_write_pin(DigitalPin.P8, debugPinState)
+
+
     currentTime = input.running_time()
     for snakeIndex in range(3):
         if snakeIsAlive[snakeIndex] == 0:
@@ -694,7 +703,8 @@ initLEDs()
 state1_init()
 nextSnakeMovementTime = [0,0,0]
 
-def on_forever():
+
+while (True):
     # State -1 = PreGame LED display
     # State 0 = Countdown to game round 1.
     # State 1 = Round 1 of Game
@@ -703,6 +713,7 @@ def on_forever():
     # State 4 = Transition from Round 1 to Round 2
     # State 5 = Transition from Round 2 to Round 3
     # State 9 = Game is over. Show snake proportional bar graph.
+    basic.pause(1)
     if stateOfGame == -1:
         state_neg1_run()
     elif stateOfGame == 0:
@@ -719,4 +730,5 @@ def on_forever():
         state5_run()
     elif stateOfGame == 9:
         state9_run()
-basic.forever(on_forever)
+
+
