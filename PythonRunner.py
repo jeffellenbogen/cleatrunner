@@ -36,8 +36,9 @@ def state1_init2():
     snakeIcon()
 
 def state2_init():
-    global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame
+    global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame, snakeEggCount
     snakeIcon()
+    snakeEggCount = [0,0,0]
     snakeLength = [8, 8, 5]
     snakeCanScoreLeft = [1, 1, 1]
     snakeCanScoreRight = [1, 1, 1]
@@ -49,8 +50,9 @@ def state2_init():
     stateOfGame = 2
 
 def state3_init():
-    global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame
+    global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame, snakeEggCount
     snakeIcon()
+    snakeEggCount = [0,0,0]
     snakeLength = [8, 5, 8]
     snakeCanScoreLeft = [1, 1, 1]
     snakeCanScoreRight = [1, 1, 1]
@@ -340,6 +342,10 @@ def initLEDs():
 def showSnake(snakeIndex: number):
     tempTrack = snakeTrack[snakeIndex]
     stripArray[tempTrack].show_color(neopixel.colors(NeoPixelColors.BLACK))
+    if snakeCanScoreLeft[snakeIndex]:
+        stripArray[tempTrack].set_pixel_color(0,NeoPixelColors.WHITE)
+    if snakeCanScoreRight[snakeIndex]:
+        stripArray[tempTrack].set_pixel_color(trackLengths[tempTrack]-1,NeoPixelColors.WHITE)
     if snakeIsAlive[snakeIndex] != 0:
         currentPixel = snakePositionOfHead[snakeIndex]
         # Sets the current snake's head color
@@ -408,9 +414,18 @@ def moveSnake(snakeIndex: number):
 
 def growSnake(snakeIndex: number):
     # Add 3 to the score for the current snakeIndex. This is called when a snake reaches an egg at either end of their track
-    global snakeScore, snakeLength
+    global snakeScore, snakeLength, snakeEggCount
+    snakeEggCount[snakeIndex] = snakeEggCount[snakeIndex] + 1
     snakeScore[snakeIndex] = snakeScore[snakeIndex] + 3
     snakeLength[snakeIndex] = snakeLength[snakeIndex] + 1
+    if (snakeLength[snakeIndex]==0):
+        radio.send_value("snake0EggCount", snakeEggCount[0])
+    elif (snakeLength[snakeIndex]==1):
+        radio.send_value("snake1EggCount", snakeEggCount[1])
+    else:
+        radio.send_value("snake2EggCount", snakeEggCount[2])      
+
+
 
 def snakeFuneral(deadSnakeIndex: number):
     global jumpingSnakeIndex, snakeTrack, snakeIsAlive, snakeLength
@@ -490,6 +505,7 @@ def on_received_value(name, value):
         # serial.write_value("snakeLastMoveTimeMS",snakeLastMoveTimeMS[tempSnakeIndex])
         # serial.write_value("nextSnakeMovementTime",nextSnakeMovementTime[tempSnakeIndex])
 radio.on_received_value(on_received_value)
+
 
 
 
@@ -702,7 +718,7 @@ initTracks()
 initLEDs()
 state1_init()
 nextSnakeMovementTime = [0,0,0]
-
+snakeEggCount = [0,0,0]
 
 while (True):
     # State -1 = PreGame LED display
