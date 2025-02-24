@@ -1,3 +1,10 @@
+def resetEggCount():
+    global snakeEggCount
+    snakeEggCount = [0,0,0]
+    radio.send_value("sn0Eggs", 0)
+    radio.send_value("sn1Eggs", 0)
+    radio.send_value("sn2Eggs", 0)      
+
 ################################
 # INIT FUNCTIONS 
 ################################
@@ -38,7 +45,7 @@ def state1_init2():
 def state2_init():
     global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame, snakeEggCount
     snakeIcon()
-    snakeEggCount = [0,0,0]
+    resetEggCount()
     snakeLength = [8, 8, 5]
     snakeCanScoreLeft = [1, 1, 1]
     snakeCanScoreRight = [1, 1, 1]
@@ -52,7 +59,7 @@ def state2_init():
 def state3_init():
     global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame, snakeEggCount
     snakeIcon()
-    snakeEggCount = [0,0,0]
+    resetEggCount()
     snakeLength = [8, 5, 8]
     snakeCanScoreLeft = [1, 1, 1]
     snakeCanScoreRight = [1, 1, 1]
@@ -418,12 +425,12 @@ def growSnake(snakeIndex: number):
     snakeEggCount[snakeIndex] = snakeEggCount[snakeIndex] + 1
     snakeScore[snakeIndex] = snakeScore[snakeIndex] + 3
     snakeLength[snakeIndex] = snakeLength[snakeIndex] + 1
-    if (snakeLength[snakeIndex]==0):
-        radio.send_value("snake0EggCount", snakeEggCount[0])
-    elif (snakeLength[snakeIndex]==1):
-        radio.send_value("snake1EggCount", snakeEggCount[1])
+    if (snakeIndex==0):
+        radio.send_value("sn0Eggs", snakeEggCount[0])
+    elif (snakeIndex==1):
+        radio.send_value("sn1Eggs", snakeEggCount[1])
     else:
-        radio.send_value("snake2EggCount", snakeEggCount[2])      
+        radio.send_value("sn2Eggs", snakeEggCount[2])      
 
 
 
