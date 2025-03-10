@@ -27,7 +27,7 @@ def state0_init():
     endTimeOfCurrentStatems = input.running_time() + 1000 * preRoundTimerLengthsecs
     stateOfGame = 0
 
-def state1_init():
+def state_neg1_init():
     global stateOfGame, resetGame, strip0, strip1, strip2
     basic.clear_screen()
     strip0.clear()
@@ -39,8 +39,9 @@ def state1_init():
     stateOfGame = -1
     resetGame = False
 
-def state1_init2():
+def state1_init():
     snakeIcon()
+    resetEggCount()
 
 def state2_init():
     global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame, snakeEggCount
@@ -105,7 +106,7 @@ def state0_run():
         showCountdownTimer()
     else:
         basic.clear_screen()
-        state1_init2()
+        state1_init()
         stateOfGame = 1
 
 def state_neg1_run():
@@ -169,7 +170,7 @@ def state5_run():
 def state9_run():
     global rangeSnake0Proportion, rangeSnake1Proportion, rangeSnake2Proportion, winningSnake
     if resetGame:
-        state1_init()
+        state_neg1_init()
     else:
         if int(input.running_time() / flashStatePeriodms) % numFlashStates >= 1:
             rangeSnake0Proportion.show_color(returnSnakeBodyColor(0))
@@ -723,7 +724,7 @@ roundWinnerFlashTimesecs = 3
 radio.set_group(200)
 initTracks()
 initLEDs()
-state1_init()
+state_neg1_init()
 nextSnakeMovementTime = [0,0,0]
 snakeEggCount = [0,0,0]
 
