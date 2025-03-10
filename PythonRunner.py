@@ -506,6 +506,8 @@ snakeLastMoveTimeMS = [0,0,0]
 
 def on_received_value(name, value):
     global snakeLastMoveTimeMS, snakeSpeedDelayMS, snakeLastCommand, nextSnakeMovementTime
+    if (name == "Fire"):
+        fire_Processing(value)
     if stateOfGame >= 1 and stateOfGame <= 3:
         tempSnakeIndex = parse_float(name)
         snakeLastCommand[tempSnakeIndex] = value
@@ -515,6 +517,18 @@ def on_received_value(name, value):
 radio.on_received_value(on_received_value)
 
 
+def fire_Processing(snakeIndex):
+
+    if (snakeEggCount[snakeIndex]>0):
+        snakeEggCount[snakeIndex]-=1
+        basic.show_number(snakeIndex)
+        snakeIcon()
+        if (snakeIndex==0):
+            radio.send_value("sn0Eggs", snakeEggCount[0])
+        elif (snakeIndex==1):
+            radio.send_value("sn1Eggs", snakeEggCount[1])
+        else:
+            radio.send_value("sn2Eggs", snakeEggCount[2]) 
 
 
 
