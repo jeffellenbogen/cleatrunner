@@ -505,15 +505,18 @@ snakeLastCommand = [0,0,0]
 snakeLastMoveTimeMS = [0,0,0]
 
 def on_received_value(name, value):
-    global snakeLastMoveTimeMS, snakeSpeedDelayMS, snakeLastCommand, nextSnakeMovementTime
-    if (name == "Fire"):
-        fire_Processing(value)
+    global snakeLastMoveTimeMS, snakeSpeedDelayMS, snakeLastCommand, nextSnakeMovementTime, stateOfGame
+    serial.write_value("name", name)
+    serial.write_value("value", value)    
     if stateOfGame >= 1 and stateOfGame <= 3:
-        tempSnakeIndex = parse_float(name)
-        snakeLastCommand[tempSnakeIndex] = value
-        nextSnakeMovementTime[tempSnakeIndex] = snakeLastMoveTimeMS[tempSnakeIndex] + snakeSpeedDelayMS[abs(value)]
-        # serial.write_value("snakeLastMoveTimeMS",snakeLastMoveTimeMS[tempSnakeIndex])
-        # serial.write_value("nextSnakeMovementTime",nextSnakeMovementTime[tempSnakeIndex])
+        if (name == "Fire"):
+            fire_Processing(value)
+        else:
+            tempSnakeIndex = parse_float(name)
+            snakeLastCommand[tempSnakeIndex] = value
+            nextSnakeMovementTime[tempSnakeIndex] = snakeLastMoveTimeMS[tempSnakeIndex] + snakeSpeedDelayMS[abs(value)]
+            # serial.write_value("snakeLastMoveTimeMS",snakeLastMoveTimeMS[tempSnakeIndex])
+            # serial.write_value("nextSnakeMovementTime",nextSnakeMovementTime[tempSnakeIndex])
 radio.on_received_value(on_received_value)
 
 
