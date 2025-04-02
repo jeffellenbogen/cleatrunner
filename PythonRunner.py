@@ -3,10 +3,10 @@ def resetEggCount():
     snakeEggCount = [0,0,0]
     radio.send_value("sn0Eggs", 0)
     radio.send_value("sn1Eggs", 0)
-    radio.send_value("sn2Eggs", 0)      
+    radio.send_value("sn2Eggs", 0)
 
 ################################
-# INIT FUNCTIONS 
+# INIT FUNCTIONS
 ################################
 
 def state0_init():
@@ -74,7 +74,7 @@ def state3_init():
 def state45_init():
     global lastRoundedSecOnCountdownTimersecs, endTimeOfCurrentStatems
     lastRoundedSecOnCountdownTimersecs = 1000 * (roundWinnerFlashTimesecs + interRoundTimerLengthsecs)
-    endTimeOfCurrentStatems = input.running_time() + lastRoundedSecOnCountdownTimersecs    
+    endTimeOfCurrentStatems = input.running_time() + lastRoundedSecOnCountdownTimersecs
 
 def state9_init():
     global scoreTotal, endTimeOfCurrentStatems, scoreProportionSnake0, scoreProportionSnake1, scoreProportionSnake2, rangeSnake0Proportion
@@ -96,7 +96,7 @@ def state9_init():
     strip2.show_color(neopixel.colors(NeoPixelColors.BLACK))
 
 ################################
-# RUN FUNCTIONS 
+# RUN FUNCTIONS
 ################################
 
 def state0_run():
@@ -134,13 +134,13 @@ def state2_run():
         state45_init()
         stateOfGame = 5
     else:
-        checkAllSnakesForMovement()    
+        checkAllSnakesForMovement()
 
 def state3_run():
     if currentTotalSnakesAlive() <= 1:
         state9_init()
     else:
-        checkAllSnakesForMovement()        
+        checkAllSnakesForMovement()
 
 def state4_run():
     global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems, interRoundTimerLengthsecs
@@ -152,7 +152,7 @@ def state4_run():
     else:
         basic.clear_screen()
         state2_init()
-        stateOfGame = 2  
+        stateOfGame = 2
 
 
 def state5_run():
@@ -186,7 +186,7 @@ def state9_run():
 
 
 ################################
-# SCORING FUNCTIONS 
+# SCORING FUNCTIONS
 ################################
 
 def setTotalScore():
@@ -219,23 +219,23 @@ def getWinner():
 
 def currentTotalSnakesAlive():
     global snakeIsAlive
-    return snakeIsAlive[0] + (snakeIsAlive[1] + snakeIsAlive[2])    
+    return snakeIsAlive[0] + (snakeIsAlive[1] + snakeIsAlive[2])
 
 ################################
-# COLLISION FUNCTIONS 
+# COLLISION FUNCTIONS
 ################################
 # This function determines whichSnake is on a given track that is passed as the trackNum parameter.
-# 
+#
 # Loop through snakeTrack0, 1, 2 and see which snake is currently on the passed trackNum.
-# 
+#
 # Return the snake(0, 1, or 2) for the given track
-# 
+#
 # Error handling, returns -1 if somehow there is no snake on the track in question. NOTE - This might be helpful if there is no snake on a given track because the snake previously occupying a given track has already died in the current round.
 def whichSnakeOnTrack(trackNum: number):
     global snakeTrack, snakeIsAlive
     for tempSnakeIndex in range(3):
         # Gets track position for each snake in order...
-        # For example 
+        # For example
         # In round 2
         # Snake 0 -> 2
         # Snake 1 -> 0
@@ -247,13 +247,13 @@ def whichSnakeOnTrack(trackNum: number):
 
 
 # This function checks whether the current snake that has been sent a command (and therefore passed into this function as a parameter).
-# 
+#
 # For the given snake we need to see if the snake is on Track 0, 1, or 2. The if/else statements are run based on the track of the current snake being evaluated.
-# 
+#
 # We set currentIntersectionIndex to the index of the intersection that the snakePositionOfHead is touch for the current snake. The "find index of" block will either return the position in the appropriate intersections array where the head is currently located, or return -1 if the head isn't in an intersection on their current track.
-# 
+#
 # IF the currentIntersectionsIndex DOES NOT = -1 (head is at an intersection) we continue...
-# 
+#
 # ____________________
 # Return values
 # -1 -> not blocked at this pixel
@@ -269,14 +269,14 @@ def isPixelBlocked(candPixel: number, candTrack: number):
         if currentIntersectionIndex != -1:
             # temp variable blockingSnakeIndex is set to the return value for the snake on the other track for this intersection.
             # Here we are working on intersections of Track0 which crosses only Track1.
-            # 
+            #
             # call whichSnakeOnTrack1 will return the snake on that track and store it in the temp variable blockingSnakeIndex.
             blockingSnakeIndex = whichSnakeOnTrack(1)
             if snakeIsAlive[blockingSnakeIndex] == 0:
                 return -1
             # We use blockingSnakeIndex to get the direction of the snake that is potentially in the intersection.
             # If the direction = 1, the blocking Snake is facing RIGHT and we use compound AND statements to determine if the blocking snake is in the intersection (based on the positionOfHead and snakeLength).
-            # 
+            #
             # If the direction = -1. we are moving LEFT, the math is slightly different, so it has a separate set of conditional statements to determine if the snake is blocking that intersection.
             if snakeDirection[blockingSnakeIndex] == 1:
                 if snakePositionOfHead[blockingSnakeIndex] >= Track10Intersections[currentIntersectionIndex] and snakePositionOfHead[blockingSnakeIndex] - (snakeLength[blockingSnakeIndex] - 1) <= Track10Intersections[currentIntersectionIndex]:
@@ -288,7 +288,7 @@ def isPixelBlocked(candPixel: number, candTrack: number):
         # We are looking at snake on Track 2 and see if it is block at an intersection onf Track
         currentIntersectionIndex = Track21Intersections.index_of(candPixel)
         # If the currentSnake's headPosition is at an intersection on this track....
-        # 
+        #
         # Then, check the other snake that COULD hit this intersection, to see if it is also occupying the intersection
         if currentIntersectionIndex != -1:
             blockingSnakeIndex = whichSnakeOnTrack(1)
@@ -302,11 +302,11 @@ def isPixelBlocked(candPixel: number, candTrack: number):
     else:
         # Same concept as above...
         # We are looking at snake on Track 1 and see if it is block at an intersection on Track 0.
-        # 
+        #
         # NOTE: Track 1 intersects with Track 0 and Track 2, which is why this section of code happens here and below.
         currentIntersectionIndex = Track10Intersections.index_of(candPixel)
         # If the currentSnake's headPosition is at an intersection on this track....
-        # 
+        #
         # Then, check the other snake that COULD hit this intersection, to see if it is also occupying the intersection
         if currentIntersectionIndex != -1:
             blockingSnakeIndex = whichSnakeOnTrack(0)
@@ -319,11 +319,11 @@ def isPixelBlocked(candPixel: number, candTrack: number):
                 return blockingSnakeIndex
         # Same concept as above...
         # We are looking at snake on Track 1 and see if it is block at an intersection on Track 2.
-        # 
+        #
         # NOTE: Track 1 intersects with Track 0 and Track 2, which is why this section of code happens here and above.
         currentIntersectionIndex = Track12Intersections.index_of(candPixel)
         # If the currentSnake's headPosition is at an intersection on this track....
-        # 
+        #
         # Then, check the other snake that COULD hit this intersection, to see if it is also occupying the intersection
         if currentIntersectionIndex != -1:
             blockingSnakeIndex = whichSnakeOnTrack(2)
@@ -337,7 +337,7 @@ def isPixelBlocked(candPixel: number, candTrack: number):
     return -1
 
 ################################
-# NEOPIXEL FUNCTIONS 
+# NEOPIXEL FUNCTIONS
 ################################
 def initLEDs():
     global strip0, strip1, strip2, stripArray
@@ -360,7 +360,7 @@ def showSnake(snakeIndex: number):
         stripArray[tempTrack].set_pixel_color(currentPixel, returnSnakeHeadColor(snakeIndex))
         for index in range(snakeLength[snakeIndex] - 1):
             # If you are moving left, snakeDirection is negative, but we want to be moving to the pixels to the right, so we invert the direction.
-            # 
+            #
             # If you are moving right, snakeDirection is positive, but we want to be moving to the pixels to the left, so we also invert the direction.
             currentPixel = currentPixel + -1 * snakeDirection[snakeIndex]
             # set the current snake's body segments to the body color
@@ -418,7 +418,7 @@ def moveSnake(snakeIndex: number):
     nextSnakeMovementTime[snakeIndex] = snakeLastMoveTimeMS[snakeIndex] + snakeSpeedDelayMS[abs(snakeLastCommand[snakeIndex])]
     # serial.write_value("snake # ",snakeIndex)
     # serial.write_value("time moved: ",snakeLastMoveTimeMS[snakeIndex])
-    # serial.write_value("next time to move: ",nextSnakeMovementTime[snakeIndex])    
+    # serial.write_value("next time to move: ",nextSnakeMovementTime[snakeIndex])
 
 def growSnake(snakeIndex: number):
     # Add 3 to the score for the current snakeIndex. This is called when a snake reaches an egg at either end of their track
@@ -431,7 +431,7 @@ def growSnake(snakeIndex: number):
     elif (snakeIndex==1):
         radio.send_value("sn1Eggs", snakeEggCount[1])
     else:
-        radio.send_value("sn2Eggs", snakeEggCount[2])      
+        radio.send_value("sn2Eggs", snakeEggCount[2])
 
 
 
@@ -506,17 +506,16 @@ snakeLastMoveTimeMS = [0,0,0]
 
 def on_received_value(name, value):
     global snakeLastMoveTimeMS, snakeSpeedDelayMS, snakeLastCommand, nextSnakeMovementTime, stateOfGame
-    serial.write_value("name", name)
-    serial.write_value("value", value)    
+    serial.write_line(name)
+    serial.write_number(value)
     if stateOfGame >= 1 and stateOfGame <= 3:
         if (name == "Fire"):
-            fire_Processing(value)
+                fire_Processing(value)
         else:
             tempSnakeIndex = parse_float(name)
             snakeLastCommand[tempSnakeIndex] = value
             nextSnakeMovementTime[tempSnakeIndex] = snakeLastMoveTimeMS[tempSnakeIndex] + snakeSpeedDelayMS[abs(value)]
-            # serial.write_value("snakeLastMoveTimeMS",snakeLastMoveTimeMS[tempSnakeIndex])
-            # serial.write_value("nextSnakeMovementTime",nextSnakeMovementTime[tempSnakeIndex])
+     
 radio.on_received_value(on_received_value)
 
 
@@ -531,7 +530,7 @@ def fire_Processing(snakeIndex):
         elif (snakeIndex==1):
             radio.send_value("sn1Eggs", snakeEggCount[1])
         else:
-            radio.send_value("sn2Eggs", snakeEggCount[2]) 
+            radio.send_value("sn2Eggs", snakeEggCount[2])
 
 
 
@@ -585,7 +584,7 @@ def convertMovementToDirection(num: number):
 
 # New and improved time driven movement function (replaced onCommandReceived)
 # This function is used to adjust snakes' positionOfHead, direction, and growth based on the passed parameters of snakeIndex and movement...
-# 
+#
 # Movement values translate to
 # -3 = fast move left
 # -2 = medium move left
@@ -613,24 +612,24 @@ def checkAllSnakesForMovement():
         # check to see if the currentSnake is moving or not. If it is zero, continue.
         if snakeLastCommand[snakeIndex] == 0:
             continue
-        # check to see if it is time to move the current snake 
-        # serial.write_value(" currentTime", currentTime)   
+        # check to see if it is time to move the current snake
+        # serial.write_value(" currentTime", currentTime)
         if (nextSnakeMovementTime[snakeIndex] <= currentTime):
             lastDirection = snakeDirection[snakeIndex]
             newDirection = convertMovementToDirection(snakeLastCommand[snakeIndex])
             
-            # Compare the lastDirection the snake was moving (stored in snakeDirection array) to the newDirection 
+            # Compare the lastDirection the snake was moving (stored in snakeDirection array) to the newDirection
             # returned by using the stored last command.
             # If direction has changed TWO things need to happen...
             # 1. Set the newDirection into snakeDirection array.
-            # 2. The head flips to the other side of the snake when direction changes. 
-            #   To accomplish this we set 2 temp variables (currentSnakeLength and currentSnake Position). 
-            #   These are used to calculate and set the new snakePositionOfHead at the opposite side of the snake, 
+            # 2. The head flips to the other side of the snake when direction changes.
+            #   To accomplish this we set 2 temp variables (currentSnakeLength and currentSnake Position).
+            #   These are used to calculate and set the new snakePositionOfHead at the opposite side of the snake,
             #   thus we need to know where the head is and how long the snake currently is.
         
             if lastDirection != newDirection:
                 snakeDirection[snakeIndex] = newDirection
-                # temp variables of currentSnakeLength and currentSnakePosition make is easier to calculate the snake's new positionOfHead 
+                # temp variables of currentSnakeLength and currentSnakePosition make is easier to calculate the snake's new positionOfHead
                 #depended on whether the snake is changing direction or not.
                 currentSnakeLength = snakeLength[snakeIndex]
                 currentSnakePositionOfHead = snakePositionOfHead[snakeIndex]
@@ -661,7 +660,7 @@ def checkAllSnakesForMovement():
 
             # Movement = 1 (RIGHT)
             # First IF statement is for moving RIGHT and checks position at far right of the track to see if their is room to move.
-            # ELSE IF snake is already at RIGHT edge AND the snake can score on the RIGHT -> growSnake. Set CanScoreLeft to 1 and toggle CanScoreRight to 0.        
+            # ELSE IF snake is already at RIGHT edge AND the snake can score on the RIGHT -> growSnake. Set CanScoreLeft to 1 and toggle CanScoreRight to 0.
             elif newDirection == 1:
                 if snakePositionOfHead[snakeIndex] != trackLengths[snakeTrack[snakeIndex]] - 1:
                     moveSnake(snakeIndex)
