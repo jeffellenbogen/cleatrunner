@@ -495,6 +495,16 @@ def snakeIcon():
         """)
 
 
+def fireIcon():
+    basic.show_leds("""
+        . . # . .
+        # . # . #
+        # # # # #
+        . # # # #
+        . . # # .
+        """)    
+
+
 ################################
 # RADIO RECEIVED FUNCTIONS
 ################################
@@ -506,8 +516,8 @@ snakeLastMoveTimeMS = [0,0,0]
 
 def on_received_value(name, value):
     global snakeLastMoveTimeMS, snakeSpeedDelayMS, snakeLastCommand, nextSnakeMovementTime, stateOfGame
-    serial.write_line(name)
-    serial.write_number(value)
+    # serial.write_line(name)
+    # serial.write_number(value)
     if stateOfGame >= 1 and stateOfGame <= 3:
         if (name == "Fire"):
                 fire_Processing(value)
@@ -523,14 +533,14 @@ def fire_Processing(snakeIndex):
 
     if (snakeEggCount[snakeIndex]>0):
         snakeEggCount[snakeIndex]-=1
-        basic.show_number(snakeIndex)
-        snakeIcon()
         if (snakeIndex==0):
             radio.send_value("sn0Eggs", snakeEggCount[0])
         elif (snakeIndex==1):
             radio.send_value("sn1Eggs", snakeEggCount[1])
         else:
             radio.send_value("sn2Eggs", snakeEggCount[2])
+        fireIcon()
+        basic.show_number(snakeIndex)    
 
 
 
@@ -637,7 +647,7 @@ def checkAllSnakesForMovement():
                     # set snake's positionOfHead if it was moving LEFT
                     snakePositionOfHead[snakeIndex] = currentSnakePositionOfHead + currentSnakeLength - 1
                 else:
-                    # set snake's positionOfHead if it was moving RIGHT
+                    # set snake's positionOfHead if it was moving 
                     snakePositionOfHead[snakeIndex] = currentSnakePositionOfHead - currentSnakeLength + 1
           
             # Checks for direction and to see if snake has room to continue moving in that direction (not at that edge).
