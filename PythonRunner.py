@@ -5,6 +5,7 @@ def resetEggCount():
     radio.send_value("sn1Eggs", 0)
     radio.send_value("sn2Eggs", 0)
 
+
 ################################
 # INIT FUNCTIONS
 ################################
@@ -539,8 +540,8 @@ def fire_Processing(snakeIndex):
             radio.send_value("sn1Eggs", snakeEggCount[1])
         else:
             radio.send_value("sn2Eggs", snakeEggCount[2])
-        fireIcon()
-        basic.show_number(snakeIndex)    
+        #fireIcon()
+        #basic.show_number(snakeIndex)    
 
 
 
@@ -607,13 +608,7 @@ debugPinState = 0
 
 def checkAllSnakesForMovement():
     global snakeLastCommand, snakeDirection, snakeLength, snakePositionOfHead, nextSnakeMovementTime
-    global snakeScore, snakeIsAlive, snakeCanScoreRight, snakeCanScoreLeft, debugPinState
-    if debugPinState:
-        debugPinState = 0
-    else:
-        debugPinState = 1
-    pins.digital_write_pin(DigitalPin.P8, debugPinState)
-
+    global snakeScore, snakeIsAlive, snakeCanScoreRight, snakeCanScoreLeft
 
     currentTime = input.running_time()
     for snakeIndex in range(3):
