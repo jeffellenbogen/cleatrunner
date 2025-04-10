@@ -1,3 +1,47 @@
+class Bullet():
+    def __init__(self, snake):
+        global snakeTrack, snakeDirection, snakePositionOfHead, 
+        self.snake = snake
+        self.track = snakeTrack[snake]
+        self.direction = snakeDirection[snake]
+        self.currentPosition = snakePositionOfHead + self.direction
+        self.nextMoveTime = input.running_time() + bulletDelayMS
+
+    def checkBulletForMovement(self):
+        if (input.running_time() >= self.nextMoveTime):
+            self.moveBullet()
+            self.checkForHit()
+            self.checkForMiss()
+
+    def displayBullet(self):
+        global stripArray
+        stripArray[self.track].set_pixel_color(self.currentPosition, NeoPixelColors.WHITE)
+        stripArray[tempTrack].show()
+
+    def moveBullet(self):  
+        self.currentPosition += self.direction
+        self.nextMoveTime = input.running_time() + bulletDelayMS
+
+    def checkForHit(self): 
+        global bulletList
+        if (self.currentPosition == isPixelBlocked(self.currentPosition, self.track)):
+        hitSnakeIndex = isPixelBlocked(self.currentPosition, self.track)
+        if hitSnakeIndex != -1:
+            # Add 2 to the score of the snake who launched the bullet after a hit has occurred.
+            snakeScore[self.snake] += 2
+            snakeIsAlive[hitSnakeIndex] = 0
+            snakeFuneral(hitSnakeIndex)
+            bulletList.remove(self)
+
+    def checkForMiss(self):  
+        global trackLengths, bulletList
+        if ((self.currentPosition < 0) or (self.currentPosition > trackLength[self.track])):
+            #fill this in when we have the Uber bullet data structure
+            bulletList.remove(self)
+
+
+
+
 def resetEggCount():
     global snakeEggCount
     snakeEggCount = [0,0,0]
@@ -121,12 +165,13 @@ def state_neg1_run():
 
 
 def state1_run():
-    global stateOfGame
+    global stateOfGame, bulletList
     if currentTotalSnakesAlive() <= 1:
         state45_init()
         stateOfGame = 4
     else:
         checkAllSnakesForMovement()
+        checkAllBulletsForMovement()
 
 
 def state2_run():
@@ -136,12 +181,14 @@ def state2_run():
         stateOfGame = 5
     else:
         checkAllSnakesForMovement()
+        checkAllBulletsForMovement()
 
 def state3_run():
     if currentTotalSnakesAlive() <= 1:
         state9_init()
     else:
         checkAllSnakesForMovement()
+        checkAllBulletsForMovement()
 
 def state4_run():
     global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems, interRoundTimerLengthsecs
@@ -349,6 +396,7 @@ def initLEDs():
 
       
 def showSnake(snakeIndex: number):
+    global stripArray
     tempTrack = snakeTrack[snakeIndex]
     stripArray[tempTrack].show_color(neopixel.colors(NeoPixelColors.BLACK))
     if snakeCanScoreLeft[snakeIndex]:
@@ -514,6 +562,7 @@ def fireIcon():
 snakeSpeedDelayMS = [10000, 50, 35, 20]
 snakeLastCommand = [0,0,0]
 snakeLastMoveTimeMS = [0,0,0]
+bulletDelayMS = 1
 
 def on_received_value(name, value):
     global snakeLastMoveTimeMS, snakeSpeedDelayMS, snakeLastCommand, nextSnakeMovementTime, stateOfGame
@@ -521,7 +570,7 @@ def on_received_value(name, value):
     # serial.write_number(value)
     if stateOfGame >= 1 and stateOfGame <= 3:
         if (name == "Fire"):
-                fire_Processing(value)
+            fire_Processing(value)
         else:
             tempSnakeIndex = parse_float(name)
             snakeLastCommand[tempSnakeIndex] = value
@@ -531,8 +580,9 @@ radio.on_received_value(on_received_value)
 
 
 def fire_Processing(snakeIndex):
-
+    global bulletList
     if (snakeEggCount[snakeIndex]>0):
+        bulletList.append(Bullet(snakeIndex))
         snakeEggCount[snakeIndex]-=1
         if (snakeIndex==0):
             radio.send_value("sn0Eggs", snakeEggCount[0])
@@ -683,6 +733,11 @@ def checkAllSnakesForMovement():
             if snakeIsAlive[snakeIndex] == 1:
                 showSnake(snakeIndex)
 
+def checkAllBulletsForMovement():
+    global bulletList
+    for bullet in bulletList:
+        bullet.checkBulletForMovement()
+
 
 
 currentSnakePositionOfHead = 0
@@ -748,6 +803,7 @@ initLEDs()
 state_neg1_init()
 nextSnakeMovementTime = [0,0,0]
 snakeEggCount = [0,0,0]
+bulletList = []
 
 while (True):
     # State -1 = PreGame LED display
