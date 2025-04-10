@@ -1,11 +1,12 @@
 class Bullet():
     def __init__(self, snake):
-        global snakeTrack, snakeDirection, snakePositionOfHead, 
+        global snakeTrack, snakeDirection, snakePositionOfHead 
         self.snake = snake
         self.track = snakeTrack[snake]
         self.direction = snakeDirection[snake]
-        self.currentPosition = snakePositionOfHead + self.direction
-        self.nextMoveTime = input.running_time() + bulletDelayMS
+        self.currentPosition = snakePositionOfHead[snake] + self.direction
+        self.nextMoveTime = 2
+        self.nextMoveTime += input.running_time()
 
     def checkBulletForMovement(self):
         if (input.running_time() >= self.nextMoveTime):
@@ -25,17 +26,17 @@ class Bullet():
     def checkForHit(self): 
         global bulletList
         if (self.currentPosition == isPixelBlocked(self.currentPosition, self.track)):
-        hitSnakeIndex = isPixelBlocked(self.currentPosition, self.track)
-        if hitSnakeIndex != -1:
-            # Add 2 to the score of the snake who launched the bullet after a hit has occurred.
-            snakeScore[self.snake] += 2
-            snakeIsAlive[hitSnakeIndex] = 0
-            snakeFuneral(hitSnakeIndex)
-            bulletList.remove(self)
+            hitSnakeIndex = isPixelBlocked(self.currentPosition, self.track)
+            if (hitSnakeIndex != -1):
+                # Add 2 to the score of the snake who launched the bullet after a hit has occurred.
+                snakeScore[self.snake] += 2
+                snakeIsAlive[hitSnakeIndex] = 0
+                snakeFuneral(hitSnakeIndex)
+                bulletList.remove(self)
 
     def checkForMiss(self):  
         global trackLengths, bulletList
-        if ((self.currentPosition < 0) or (self.currentPosition > trackLength[self.track])):
+        if ((self.currentPosition < 0) or (self.currentPosition > trackLengths[self.track])):
             #fill this in when we have the Uber bullet data structure
             bulletList.remove(self)
 
@@ -803,7 +804,8 @@ initLEDs()
 state_neg1_init()
 nextSnakeMovementTime = [0,0,0]
 snakeEggCount = [0,0,0]
-bulletList = []
+bulletList: List[Bullet] = []
+
 
 while (True):
     # State -1 = PreGame LED display
