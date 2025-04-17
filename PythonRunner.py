@@ -600,7 +600,7 @@ def fireIcon():
 ################################
 
 
-snakeSpeedDelayMS = [10000, 50, 35, 20]
+snakeSpeedDelayMS = [10000, 75, 50, 25]
 snakeLastCommand = [0,0,0]
 snakeLastMoveTimeMS = [0,0,0]
 bulletDelayMS = 1
