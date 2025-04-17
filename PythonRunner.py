@@ -11,6 +11,7 @@ class Bullet():
     def checkBulletForMovement(self):
         if (input.running_time() >= self.nextMoveTime):
             self.moveBullet()
+            self.displayBullet()
             self.checkForHit()
             self.checkForMiss()
 
