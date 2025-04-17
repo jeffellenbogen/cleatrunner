@@ -29,14 +29,13 @@ class Bullet():
 
     def checkForHit(self): 
         global bulletList
-        if (self.currentPosition == isPixelBlocked(self.currentPosition, self.track)):
-            hitSnakeIndex = isPixelBlocked(self.currentPosition, self.track)
-            if (hitSnakeIndex != -1):
-                # Add 2 to the score of the snake who launched the bullet after a hit has occurred.
-                snakeScore[self.snake] += 2
-                snakeIsAlive[hitSnakeIndex] = 0
-                snakeFuneral(hitSnakeIndex)
-                bulletList.remove(self)
+        hitSnakeIndex = isPixelBlocked(self.currentPosition, self.track)
+        if (hitSnakeIndex != -1):
+            # Add 2 to the score of the snake who launched the bullet after a hit has occurred.
+            snakeScore[self.snake] += 2
+            snakeIsAlive[hitSnakeIndex] = 0
+            snakeFuneral(hitSnakeIndex)
+            bulletList.remove(self)
 
     def checkForMiss(self):  
         global trackLengths, bulletList
@@ -600,7 +599,7 @@ def fireIcon():
 ################################
 
 
-snakeSpeedDelayMS = [10000, 75, 50, 25]
+snakeSpeedDelayMS = [10000, 94, 56, 28]
 snakeLastCommand = [0,0,0]
 snakeLastMoveTimeMS = [0,0,0]
 bulletDelayMS = 1
