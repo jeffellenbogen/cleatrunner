@@ -18,7 +18,7 @@ class Bullet():
     def displayBullet(self):
         global stripArray
         stripArray[self.track].set_pixel_color(self.currentPosition, NeoPixelColors.WHITE)
-        stripArray[tempTrack].show()
+
 
     def moveBullet(self): 
         global bulletDelayMS 
@@ -175,7 +175,7 @@ def state1_run():
     else:
         checkAllSnakesForMovement()
         checkAllBulletsForMovement()
-
+        showEverything()
 
 def state2_run():
     global stateOfGame
@@ -185,6 +185,7 @@ def state2_run():
     else:
         checkAllSnakesForMovement()
         checkAllBulletsForMovement()
+        showEverything()
 
 def state3_run():
     if currentTotalSnakesAlive() <= 1:
@@ -192,6 +193,7 @@ def state3_run():
     else:
         checkAllSnakesForMovement()
         checkAllBulletsForMovement()
+        showEverything()
 
 def state4_run():
     global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems, interRoundTimerLengthsecs
@@ -427,6 +429,34 @@ def flashWinningSnake():
         showSnake(getRoundWinner())
     else:
         stripArray[snakeTrack[getRoundWinner()]].show_color(neopixel.colors(NeoPixelColors.BLACK))
+
+def showEverything():
+    global stripArray, bulletList
+    for tempTrack in range(0,3):
+        snakeIndex = whichSnakeOnTrack(tempTrack)
+        stripArray[tempTrack].show_color(neopixel.colors(NeoPixelColors.BLACK))
+        if snakeCanScoreLeft[snakeIndex]:
+            stripArray[tempTrack].set_pixel_color(0,NeoPixelColors.WHITE)
+        if snakeCanScoreRight[snakeIndex]:
+            stripArray[tempTrack].set_pixel_color(trackLengths[tempTrack]-1,NeoPixelColors.WHITE)
+        if snakeIsAlive[snakeIndex] != 0:
+            currentPixel = snakePositionOfHead[snakeIndex]
+            # Sets the current snake's head color
+            stripArray[tempTrack].set_pixel_color(currentPixel, returnSnakeHeadColor(snakeIndex))
+            for index in range(snakeLength[snakeIndex] - 1):
+                # If you are moving left, snakeDirection is negative, but we want to be moving to the pixels to the right, so we invert the direction.
+                #
+                # If you are moving right, snakeDirection is positive, but we want to be moving to the pixels to the left, so we also invert the direction.
+                currentPixel = currentPixel + -1 * snakeDirection[snakeIndex]
+                # set the current snake's body segments to the body color
+                stripArray[tempTrack].set_pixel_color(currentPixel, returnSnakeBodyColor(snakeIndex))
+    for bullet in bulletList:        
+        bullet.displayBullet()
+    for tempTrack in range(0,3):
+        stripArray[tempTrack].show()
+
+
+
 
 ################################
 # SNAKE DATA FUNCTIONS
@@ -733,8 +763,8 @@ def checkAllSnakesForMovement():
                     snakeCanScoreLeft[snakeIndex] = 1
                     snakeCanScoreRight[snakeIndex] = 0
             #Snake make have been killed by a collision, check to see if it should be shown
-            if snakeIsAlive[snakeIndex] == 1:
-                showSnake(snakeIndex)
+         #   if snakeIsAlive[snakeIndex] == 1:
+               # showSnake(snakeIndex)
 
 def checkAllBulletsForMovement():
     global bulletList
