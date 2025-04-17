@@ -20,7 +20,8 @@ class Bullet():
         stripArray[self.track].set_pixel_color(self.currentPosition, NeoPixelColors.WHITE)
         stripArray[tempTrack].show()
 
-    def moveBullet(self):  
+    def moveBullet(self): 
+        global bulletDelayMS 
         self.currentPosition += self.direction
         self.nextMoveTime = input.running_time() + bulletDelayMS
 
