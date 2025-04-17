@@ -9,11 +9,13 @@ class Bullet():
         self.nextMoveTime += input.running_time()
 
     def checkBulletForMovement(self):
+        global displayUpdateNeeded
         if (input.running_time() >= self.nextMoveTime):
             self.moveBullet()
             self.displayBullet()
             self.checkForHit()
             self.checkForMiss()
+            displayUpdateNeeded = True
 
     def displayBullet(self):
         global stripArray
@@ -431,30 +433,31 @@ def flashWinningSnake():
         stripArray[snakeTrack[getRoundWinner()]].show_color(neopixel.colors(NeoPixelColors.BLACK))
 
 def showEverything():
-    global stripArray, bulletList
-    for tempTrack in range(0,3):
-        snakeIndex = whichSnakeOnTrack(tempTrack)
-        stripArray[tempTrack].show_color(neopixel.colors(NeoPixelColors.BLACK))
-        if snakeCanScoreLeft[snakeIndex]:
-            stripArray[tempTrack].set_pixel_color(0,NeoPixelColors.WHITE)
-        if snakeCanScoreRight[snakeIndex]:
-            stripArray[tempTrack].set_pixel_color(trackLengths[tempTrack]-1,NeoPixelColors.WHITE)
-        if snakeIsAlive[snakeIndex] != 0:
-            currentPixel = snakePositionOfHead[snakeIndex]
-            # Sets the current snake's head color
-            stripArray[tempTrack].set_pixel_color(currentPixel, returnSnakeHeadColor(snakeIndex))
-            for index in range(snakeLength[snakeIndex] - 1):
-                # If you are moving left, snakeDirection is negative, but we want to be moving to the pixels to the right, so we invert the direction.
-                #
-                # If you are moving right, snakeDirection is positive, but we want to be moving to the pixels to the left, so we also invert the direction.
-                currentPixel = currentPixel + -1 * snakeDirection[snakeIndex]
-                # set the current snake's body segments to the body color
-                stripArray[tempTrack].set_pixel_color(currentPixel, returnSnakeBodyColor(snakeIndex))
-    for bullet in bulletList:        
-        bullet.displayBullet()
-    for tempTrack in range(0,3):
-        stripArray[tempTrack].show()
-
+    global stripArray, bulletList, displayUpdateNeeded
+    if (displayUpdateNeeded):
+        for tempTrack in range(0,3):
+            snakeIndex = whichSnakeOnTrack(tempTrack)
+            stripArray[tempTrack].show_color(neopixel.colors(NeoPixelColors.BLACK))
+            if snakeCanScoreLeft[snakeIndex]:
+                stripArray[tempTrack].set_pixel_color(0,NeoPixelColors.WHITE)
+            if snakeCanScoreRight[snakeIndex]:
+                stripArray[tempTrack].set_pixel_color(trackLengths[tempTrack]-1,NeoPixelColors.WHITE)
+            if snakeIsAlive[snakeIndex] != 0:
+                currentPixel = snakePositionOfHead[snakeIndex]
+                # Sets the current snake's head color
+                stripArray[tempTrack].set_pixel_color(currentPixel, returnSnakeHeadColor(snakeIndex))
+                for index in range(snakeLength[snakeIndex] - 1):
+                    # If you are moving left, snakeDirection is negative, but we want to be moving to the pixels to the right, so we invert the direction.
+                    #
+                    # If you are moving right, snakeDirection is positive, but we want to be moving to the pixels to the left, so we also invert the direction.
+                    currentPixel = currentPixel + -1 * snakeDirection[snakeIndex]
+                    # set the current snake's body segments to the body color
+                    stripArray[tempTrack].set_pixel_color(currentPixel, returnSnakeBodyColor(snakeIndex))
+        for bullet in bulletList:        
+            bullet.displayBullet()
+        for tempTrack in range(0,3):
+            stripArray[tempTrack].show()
+        displayUpdateNeeded = False
 
 
 
@@ -691,7 +694,7 @@ debugPinState = 0
 
 def checkAllSnakesForMovement():
     global snakeLastCommand, snakeDirection, snakeLength, snakePositionOfHead, nextSnakeMovementTime
-    global snakeScore, snakeIsAlive, snakeCanScoreRight, snakeCanScoreLeft
+    global snakeScore, snakeIsAlive, snakeCanScoreRight, snakeCanScoreLeft, displayUpdateNeeded
 
     currentTime = input.running_time()
     for snakeIndex in range(3):
@@ -703,6 +706,7 @@ def checkAllSnakesForMovement():
         # check to see if it is time to move the current snake
         # serial.write_value(" currentTime", currentTime)
         if (nextSnakeMovementTime[snakeIndex] <= currentTime):
+            displayUpdateNeeded = True
             lastDirection = snakeDirection[snakeIndex]
             newDirection = convertMovementToDirection(snakeLastCommand[snakeIndex])
             
@@ -837,6 +841,7 @@ state_neg1_init()
 nextSnakeMovementTime = [0,0,0]
 snakeEggCount = [0,0,0]
 bulletList: List[Bullet] = []
+displayUpdateNeeded = False
 
 
 while (True):
