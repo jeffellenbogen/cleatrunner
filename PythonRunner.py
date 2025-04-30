@@ -91,6 +91,7 @@ def state_neg1_init():
 def state1_init():
     snakeIcon()
     resetEggCount()
+    bulletList.clear()
 
 def state2_init():
     global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame, snakeEggCount
@@ -105,6 +106,7 @@ def state2_init():
         spawnSnake(index)
         showSnake(index)
     stateOfGame = 2
+    bulletList.clear()
 
 def state3_init():
     global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame, snakeEggCount
@@ -119,6 +121,7 @@ def state3_init():
         spawnSnake(index)
         showSnake(index)
     stateOfGame = 3
+    bulletList.clear()
     
 def state45_init():
     global lastRoundedSecOnCountdownTimersecs, endTimeOfCurrentStatems
