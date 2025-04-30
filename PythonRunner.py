@@ -44,6 +44,10 @@ class Bullet():
             bulletList.remove(self)
 
 
+def clearBulletList():
+    global bulletList
+    for tempBullet in bulletList:
+        bulletList.remove[tempBullet]
 
 
 def resetEggCount():
@@ -89,13 +93,11 @@ def state_neg1_init():
     resetGame = False
 
 def state1_init():
-    global bulletList
     snakeIcon()
     resetEggCount()
-    bulletList.clear()
+    clearBulletList()
 
-def state2_init():
-    global bulletList    
+def state2_init(): 
     global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame, snakeEggCount
     snakeIcon()
     resetEggCount()
@@ -108,10 +110,9 @@ def state2_init():
         spawnSnake(index)
         showSnake(index)
     stateOfGame = 2
-    bulletList.clear()
+    clearBulletList()
 
-def state3_init():
-    global bulletList    
+def state3_init():  
     global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame, snakeEggCount
     snakeIcon()
     resetEggCount()
@@ -124,7 +125,7 @@ def state3_init():
         spawnSnake(index)
         showSnake(index)
     stateOfGame = 3
-    bulletList.clear()
+    clearBulletList()
     
 def state45_init():
     global lastRoundedSecOnCountdownTimersecs, endTimeOfCurrentStatems
@@ -175,7 +176,7 @@ def state_neg1_run():
 
 
 def state1_run():
-    global stateOfGame, bulletList
+    global stateOfGame
     if currentTotalSnakesAlive() <= 1:
         state45_init()
         stateOfGame = 4
