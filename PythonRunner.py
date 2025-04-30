@@ -47,9 +47,8 @@ class Bullet():
 
 def clearBulletList():
     global bulletList
-    for i in range (bulletList.len()):
+    for i in range (len(bulletList)):
         bulletList.remove_at(i)
-
 
 
 def resetEggCount():
