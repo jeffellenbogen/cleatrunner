@@ -46,12 +46,11 @@ class Bullet():
     def removeBullet(self):
         global bulletList
         bulletList.remove(self)
-        
+
 
 def clearBulletList():
     global bulletList
-    for tempBullet in bulletList:
-        tempBullet.removeBullet()
+    bulletList=[]
 
 
 def resetEggCount():
