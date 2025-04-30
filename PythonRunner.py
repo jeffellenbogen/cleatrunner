@@ -89,11 +89,13 @@ def state_neg1_init():
     resetGame = False
 
 def state1_init():
+    global bulletList
     snakeIcon()
     resetEggCount()
     bulletList.clear()
 
 def state2_init():
+    global bulletList    
     global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame, snakeEggCount
     snakeIcon()
     resetEggCount()
@@ -109,6 +111,7 @@ def state2_init():
     bulletList.clear()
 
 def state3_init():
+    global bulletList    
     global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame, snakeEggCount
     snakeIcon()
     resetEggCount()
