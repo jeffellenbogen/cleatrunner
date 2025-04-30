@@ -43,12 +43,14 @@ class Bullet():
             #fill this in when we have the Uber bullet data structure
             bulletList.remove(self)
 
+    def removeBullet(self):
+        global bulletList
+        bulletList.remove(self)
 
 
 def clearBulletList():
     global bulletList
-    for i in range (len(bulletList)):
-        bulletList.remove_at(i)
+    bulletList=[]
 
 
 def resetEggCount():
@@ -882,5 +884,3 @@ while (True):
         state5_run()
     elif stateOfGame == 9:
         state9_run()
-
-
