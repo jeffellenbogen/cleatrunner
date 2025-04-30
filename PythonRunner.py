@@ -47,8 +47,8 @@ class Bullet():
 
 def clearBulletList():
     global bulletList
-    for tempBullet in bulletList:
-        bulletList.remove_at(0)
+    for i in range (bulletList.len()):
+        bulletList.remove_at(i)
 
 
 
