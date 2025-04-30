@@ -43,11 +43,15 @@ class Bullet():
             #fill this in when we have the Uber bullet data structure
             bulletList.remove(self)
 
+    def removeBullet(self):
+        global bulletList
+        bulletList.remove(self)
+        
 
 def clearBulletList():
     global bulletList
     for tempBullet in bulletList:
-        bulletList.pop()
+        tempBullet.removeBullet()
 
 
 def resetEggCount():
