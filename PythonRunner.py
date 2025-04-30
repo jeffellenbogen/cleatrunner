@@ -47,7 +47,7 @@ class Bullet():
 def clearBulletList():
     global bulletList
     for tempBullet in bulletList:
-        bulletList.remove[tempBullet]
+        bulletList.pop()
 
 
 def resetEggCount():
