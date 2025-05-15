@@ -122,9 +122,6 @@ def state2_init():
     snakeCanScoreRight = [1, 1, 1]
     snakeTrack = [1, 2, 0]
     snakeIsAlive = [1, 1, 1]
-    for index in range(3):
-        spawnSnake(index)
-        showSnake(index)
     stateOfGame = 2
     clearBulletList()
 
@@ -137,9 +134,6 @@ def state3_init():
     snakeCanScoreRight = [1, 1, 1]
     snakeTrack = [2, 0, 1]
     snakeIsAlive = [1, 1, 1]
-    for index in range(3):
-        spawnSnake(index)
-        showSnake(index)
     stateOfGame = 3
     clearBulletList()
     
@@ -147,6 +141,9 @@ def state45_init():
     global lastRoundedSecOnCountdownTimersecs, endTimeOfCurrentStatems
     lastRoundedSecOnCountdownTimersecs = 1000 * (roundWinnerFlashTimesecs + interRoundTimerLengthsecs)
     endTimeOfCurrentStatems = input.running_time() + lastRoundedSecOnCountdownTimersecs
+    for index in range(3):
+        spawnSnake(index)
+        showSnake(index)    
 
 def state9_init():
     global scoreTotal, endTimeOfCurrentStatems, scoreProportionSnake0, scoreProportionSnake1, scoreProportionSnake2, rangeSnake0Proportion
