@@ -1,6 +1,6 @@
 class Bullet():
     def __init__(self, snake):
-        global snakeTrack, snakeDirection, snakePositionOfHead 
+        global snakeTrack, snakeDirection, snakePositionOfHead
         self.snake = snake
         self.track = snakeTrack[snake]
         self.direction = snakeDirection[snake]
@@ -22,22 +22,23 @@ class Bullet():
         stripArray[self.track].set_pixel_color(self.currentPosition, NeoPixelColors.WHITE)
 
 
-    def moveBullet(self): 
-        global bulletDelayMS 
+    def moveBullet(self):
+        global bulletDelayMS
         self.currentPosition += self.direction
         self.nextMoveTime = input.running_time() + bulletDelayMS
 
-    def checkForHit(self): 
-        global bulletList
+    def checkForHit(self):
+        global bulletList, lastScoreChangeTimeMS
         hitSnakeIndex = isPixelBlocked(self.currentPosition, self.track)
         if (hitSnakeIndex != -1):
             # Add 2 to the score of the snake who launched the bullet after a hit has occurred.
-            snakeScore[self.snake] += 2
+            snakeScore[self.snake] += 3
+            lastScoreChangeTimeMS = input.running_time()
             snakeIsAlive[hitSnakeIndex] = 0
             snakeFuneral(hitSnakeIndex)
             bulletList.remove(self)
 
-    def checkForMiss(self):  
+    def checkForMiss(self):
         global trackLengths, bulletList
         if ((self.currentPosition < 0) or (self.currentPosition > trackLengths[self.track])):
             #fill this in when we have the Uber bullet data structure
@@ -59,6 +60,18 @@ def resetEggCount():
     radio.send_value("sn0Eggs", 0)
     radio.send_value("sn1Eggs", 0)
     radio.send_value("sn2Eggs", 0)
+
+def checkForStatemate():
+    global lastScoreChangeTimeMS, snakeCanScoreLeft, snakeCanScoreRight
+    if (input.running_time()>lastScoreChangeTimeMS+15000):
+        lastScoreChangeTimeMS = input.running_time()
+        for tempTrack in range(3):
+            tempSnake = whichSnakeOnTrack(tempTrack)
+            if (tempSnake != -1):
+                if ((snakeCanScoreLeft[tempSnake]== 0) or (snakeCanScoreRight[tempSnake]== 0)):
+                    snakeCanScoreLeft[tempSnake] = abs(1-snakeCanScoreLeft[tempSnake])
+                    snakeCanScoreRight[tempSnake] = abs(1-snakeCanScoreRight[tempSnake])
+
 
 
 ################################
@@ -100,7 +113,7 @@ def state1_init():
     resetEggCount()
     clearBulletList()
 
-def state2_init(): 
+def state2_init():
     global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame, snakeEggCount
     snakeIcon()
     resetEggCount()
@@ -115,7 +128,7 @@ def state2_init():
     stateOfGame = 2
     clearBulletList()
 
-def state3_init():  
+def state3_init():
     global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame, snakeEggCount
     snakeIcon()
     resetEggCount()
@@ -187,6 +200,7 @@ def state1_run():
         checkAllSnakesForMovement()
         checkAllBulletsForMovement()
         showEverything()
+        checkForStatemate()
 
 def state2_run():
     global stateOfGame
@@ -197,6 +211,7 @@ def state2_run():
         checkAllSnakesForMovement()
         checkAllBulletsForMovement()
         showEverything()
+        checkForStatemate()
 
 def state3_run():
     if currentTotalSnakesAlive() <= 1:
@@ -205,6 +220,7 @@ def state3_run():
         checkAllSnakesForMovement()
         checkAllBulletsForMovement()
         showEverything()
+        checkForStatemate()
 
 def state4_run():
     global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems, interRoundTimerLengthsecs
@@ -467,7 +483,7 @@ def showEverything():
                     currentPixel = currentPixel + -1 * snakeDirection[snakeIndex]
                     # set the current snake's body segments to the body color
                     stripArray[tempTrack].set_pixel_color(currentPixel, returnSnakeBodyColor(snakeIndex))
-        for bullet in bulletList:        
+        for bullet in bulletList:
             bullet.displayBullet()
         for tempTrack in range(0,3):
             stripArray[tempTrack].show()
@@ -521,9 +537,10 @@ def moveSnake(snakeIndex: number):
 
 def growSnake(snakeIndex: number):
     # Add 3 to the score for the current snakeIndex. This is called when a snake reaches an egg at either end of their track
-    global snakeScore, snakeLength, snakeEggCount
+    global snakeScore, snakeLength, snakeEggCount, lastScoreChangeTimeMS
     snakeEggCount[snakeIndex] = snakeEggCount[snakeIndex] + 1
-    snakeScore[snakeIndex] = snakeScore[snakeIndex] + 3
+    snakeScore[snakeIndex] = snakeScore[snakeIndex] + 1
+    lastScoreChangeTimeMS = input.running_time()
     snakeLength[snakeIndex] = snakeLength[snakeIndex] + 1
     if (snakeIndex==0):
         radio.send_value("sn0Eggs", snakeEggCount[0])
@@ -601,7 +618,7 @@ def fireIcon():
         # # # # #
         . # # # #
         . . # # .
-        """)    
+        """)
 
 
 ################################
@@ -641,7 +658,7 @@ def fire_Processing(snakeIndex):
         else:
             radio.send_value("sn2Eggs", snakeEggCount[2])
         #fireIcon()
-        #basic.show_number(snakeIndex)    
+        #basic.show_number(snakeIndex)
 
 
 
@@ -708,7 +725,7 @@ debugPinState = 0
 
 def checkAllSnakesForMovement():
     global snakeLastCommand, snakeDirection, snakeLength, snakePositionOfHead, nextSnakeMovementTime
-    global snakeScore, snakeIsAlive, snakeCanScoreRight, snakeCanScoreLeft, displayUpdateNeeded
+    global snakeScore, snakeIsAlive, snakeCanScoreRight, snakeCanScoreLeft, displayUpdateNeeded, lastScoreChangeTimeMS
 
     currentTime = input.running_time()
     for snakeIndex in range(3):
@@ -743,7 +760,7 @@ def checkAllSnakesForMovement():
                     # set snake's positionOfHead if it was moving LEFT
                     snakePositionOfHead[snakeIndex] = currentSnakePositionOfHead + currentSnakeLength - 1
                 else:
-                    # set snake's positionOfHead if it was moving 
+                    # set snake's positionOfHead if it was moving
                     snakePositionOfHead[snakeIndex] = currentSnakePositionOfHead - currentSnakeLength + 1
           
             # Checks for direction and to see if snake has room to continue moving in that direction (not at that edge).
@@ -757,6 +774,7 @@ def checkAllSnakesForMovement():
                     if blockingSnakeIndex != -1:
                         # Add 2 to the score of the blocking snake after a collision has occurred.
                         snakeScore[blockingSnakeIndex] = snakeScore[blockingSnakeIndex] + 2
+                        lastScoreChangeTimeMS = input.running_time()
                         snakeIsAlive[snakeIndex] = 0
                         snakeFuneral(snakeIndex)
                 elif snakeCanScoreLeft[snakeIndex] == 1:
@@ -774,6 +792,7 @@ def checkAllSnakesForMovement():
                     if blockingSnakeIndex != -1:
                         # Add 2 to the score of the blocking snake after a collision has occurred.
                         snakeScore[blockingSnakeIndex] = snakeScore[blockingSnakeIndex] + 2
+                        lastScoreChangeTimeMS = input.running_time()
                         snakeIsAlive[snakeIndex] = 0
                         snakeFuneral(snakeIndex)
                 elif snakeCanScoreRight[snakeIndex] == 1:
@@ -856,6 +875,7 @@ nextSnakeMovementTime = [0,0,0]
 snakeEggCount = [0,0,0]
 bulletList: List[Bullet] = []
 displayUpdateNeeded = False
+lastScoreChangeTimeMS = 0
 
 
 while (True):
