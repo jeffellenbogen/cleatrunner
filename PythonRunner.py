@@ -117,11 +117,6 @@ def state2_init():
     global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame, snakeEggCount
     snakeIcon()
     resetEggCount()
-    snakeLength = [8, 8, 5]
-    snakeCanScoreLeft = [1, 1, 1]
-    snakeCanScoreRight = [1, 1, 1]
-    snakeTrack = [1, 2, 0]
-    snakeIsAlive = [1, 1, 1]
     stateOfGame = 2
     clearBulletList()
 
@@ -129,11 +124,6 @@ def state3_init():
     global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame, snakeEggCount
     snakeIcon()
     resetEggCount()
-    snakeLength = [8, 5, 8]
-    snakeCanScoreLeft = [1, 1, 1]
-    snakeCanScoreRight = [1, 1, 1]
-    snakeTrack = [2, 0, 1]
-    snakeIsAlive = [1, 1, 1]
     stateOfGame = 3
     clearBulletList()
     
@@ -143,14 +133,33 @@ def state4A5A_init():
     endTimeOfCurrentStatems = input.running_time() + roundWinnerFlashTimesecs * 1000
 
 
- def state4B5B_init():
+def state4B_init():
     #B State shows snakes in new location and countdown timer.
     global lastRoundedSecOnCountdownTimersecs, endTimeOfCurrentStatems
     lastRoundedSecOnCountdownTimersecs = 1000 * interRoundTimerLengthsecs
     endTimeOfCurrentStatems = input.running_time() + lastRoundedSecOnCountdownTimersecs
+    snakeTrack = [1, 2, 0]
+    snakeIsAlive = [1, 1, 1]
+    snakeLength = [8, 8, 5]
+    snakeCanScoreLeft = [1, 1, 1]
+    snakeCanScoreRight = [1, 1, 1]
     for index in range(3):
         spawnSnake(index)
-        showSnake(index)            
+        showSnake(index)     
+
+def state5B_init():
+    #B State shows snakes in new location and countdown timer.
+    global lastRoundedSecOnCountdownTimersecs, endTimeOfCurrentStatems
+    lastRoundedSecOnCountdownTimersecs = 1000 * interRoundTimerLengthsecs
+    endTimeOfCurrentStatems = input.running_time() + lastRoundedSecOnCountdownTimersecs
+    snakeTrack = [2, 0, 1]
+    snakeIsAlive = [1, 1, 1]
+    snakeLength = [8, 5, 8]
+    snakeCanScoreLeft = [1, 1, 1]
+    snakeCanScoreRight = [1, 1, 1]    
+    for index in range(3):
+        spawnSnake(index)
+        showSnake(index)                   
 
 
 
@@ -235,7 +244,7 @@ def state4A_run():
         flashWinningSnake()
     else:
         basic.clear_screen()
-        state4B5B_init()
+        state4B_init()
         stateOfGame = 42
 
 def state4B_run():
@@ -256,7 +265,7 @@ def state5A_run():
         flashWinningSnake()
     else:
         basic.clear_screen()
-        state4B5B_init()
+        state5B_init()
         stateOfGame = 52
 
 def state5B_run():
