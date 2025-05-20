@@ -137,13 +137,22 @@ def state3_init():
     stateOfGame = 3
     clearBulletList()
     
-def state45_init():
+def state4A5A_init():
+    #A State flashes the winner for duration of flash timer
+    global endTimeOfCurrentStatems
+    endTimeOfCurrentStatems = input.running_time() + roundWinnerFlashTimesecs * 1000
+
+
+ def state4B5B_init():
+    #B State shows snakes in new location and countdown timer.
     global lastRoundedSecOnCountdownTimersecs, endTimeOfCurrentStatems
-    lastRoundedSecOnCountdownTimersecs = 1000 * (roundWinnerFlashTimesecs + interRoundTimerLengthsecs)
+    lastRoundedSecOnCountdownTimersecs = 1000 * interRoundTimerLengthsecs
     endTimeOfCurrentStatems = input.running_time() + lastRoundedSecOnCountdownTimersecs
     for index in range(3):
         spawnSnake(index)
-        showSnake(index)    
+        showSnake(index)            
+
+
 
 def state9_init():
     global scoreTotal, endTimeOfCurrentStatems, scoreProportionSnake0, scoreProportionSnake1, scoreProportionSnake2, rangeSnake0Proportion
@@ -191,8 +200,8 @@ def state_neg1_run():
 def state1_run():
     global stateOfGame
     if currentTotalSnakesAlive() <= 1:
-        state45_init()
-        stateOfGame = 4
+        state4A5A_init()
+        stateOfGame = 41
     else:
         checkAllSnakesForMovement()
         checkAllBulletsForMovement()
@@ -202,8 +211,8 @@ def state1_run():
 def state2_run():
     global stateOfGame
     if currentTotalSnakesAlive() <= 1:
-        state45_init()
-        stateOfGame = 5
+        state4A5A_init()
+        stateOfGame = 51
     else:
         checkAllSnakesForMovement()
         checkAllBulletsForMovement()
@@ -219,30 +228,47 @@ def state3_run():
         showEverything()
         checkForStatemate()
 
-def state4_run():
+def state4A_run():
     global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems, interRoundTimerLengthsecs
     countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
-    if countdownTimeRemainingms > interRoundTimerLengthsecs * 1000:
+    if countdownTimeRemainingms > 0:
         flashWinningSnake()
-    elif countdownTimeRemainingms >= 0:
+    else:
+        basic.clear_screen()
+        state4B5B_init()
+        stateOfGame = 42
+
+def state4B_run():
+    global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems, interRoundTimerLengthsecs
+    countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
+    if countdownTimeRemainingms >= 0:
         showCountdownTimer()
     else:
         basic.clear_screen()
         state2_init()
-        stateOfGame = 2
+        stateOfGame = 2        
 
 
-def state5_run():
+def state5A_run():
     global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems, interRoundTimerLengthsecs
     countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
-    if countdownTimeRemainingms > interRoundTimerLengthsecs * 1000:
+    if countdownTimeRemainingms > 0:
         flashWinningSnake()
-    elif countdownTimeRemainingms >= 0:
+    else:
+        basic.clear_screen()
+        state4B5B_init()
+        stateOfGame = 52
+
+def state5B_run():
+    global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems, interRoundTimerLengthsecs
+    countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
+    if countdownTimeRemainingms >= 0:
         showCountdownTimer()
     else:
         basic.clear_screen()
         state3_init()
-        stateOfGame = 3
+        stateOfGame = 3       
+      
 
 def state9_run():
     global rangeSnake0Proportion, rangeSnake1Proportion, rangeSnake2Proportion, winningSnake
@@ -856,13 +882,10 @@ countdownTimeRemainingms = 0
 strip2: neopixel.Strip = None
 strip1: neopixel.Strip = None
 strip0: neopixel.Strip = None
-roundWinnerFlashTimesecs = 0
-interRoundTimerLengthsecs = 0
-preRoundTimerLengthsecs = 0
 stateOfGame = 0
 stateOfGame = -2
 preRoundTimerLengthsecs = 5
-interRoundTimerLengthsecs = 3
+interRoundTimerLengthsecs = 5
 roundWinnerFlashTimesecs = 3
 radio.set_group(200)
 initTracks()
@@ -895,9 +918,13 @@ while (True):
         state2_run()
     elif stateOfGame == 3:
         state3_run()
-    elif stateOfGame == 4:
-        state4_run()
-    elif stateOfGame == 5:
-        state5_run()
+    elif stateOfGame == 41:
+        state4A_run()
+    elif stateOfGame == 42:
+        state4B_run()        
+    elif stateOfGame == 51:
+        state5A_run()
+    elif stateOfGame == 52:
+        state5B_run()        
     elif stateOfGame == 9:
         state9_run()
