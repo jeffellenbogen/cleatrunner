@@ -129,13 +129,14 @@ def state3_init():
     
 def state4A5A_init():
     #A State flashes the winner for duration of flash timer
-    global endTimeOfCurrentStatems
+    global endTimeOfCurrentStatems, roundWinnerFlashTimesecs
     endTimeOfCurrentStatems = input.running_time() + roundWinnerFlashTimesecs * 1000
 
 
 def state4B_init():
     #B State shows snakes in new location and countdown timer.
-    global lastRoundedSecOnCountdownTimersecs, endTimeOfCurrentStatems
+    global lastRoundedSecOnCountdownTimersecs, endTimeOfCurrentStatems, interRoundTimerLengthsecs, snakeIsAlive, snakeTrack
+    global snakeLength, snakeCanScoreLeft, snakeCanScoreRight
     lastRoundedSecOnCountdownTimersecs = 1000 * interRoundTimerLengthsecs
     endTimeOfCurrentStatems = input.running_time() + lastRoundedSecOnCountdownTimersecs
     snakeTrack = [1, 2, 0]
@@ -149,7 +150,8 @@ def state4B_init():
 
 def state5B_init():
     #B State shows snakes in new location and countdown timer.
-    global lastRoundedSecOnCountdownTimersecs, endTimeOfCurrentStatems
+    global lastRoundedSecOnCountdownTimersecs, endTimeOfCurrentStatems, interRoundTimerLengthsecs, snakeIsAlive, snakeTrack
+    global snakeLength, snakeCanScoreLeft, snakeCanScoreRight
     lastRoundedSecOnCountdownTimersecs = 1000 * interRoundTimerLengthsecs
     endTimeOfCurrentStatems = input.running_time() + lastRoundedSecOnCountdownTimersecs
     snakeTrack = [2, 0, 1]
