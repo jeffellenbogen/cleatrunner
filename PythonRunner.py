@@ -106,6 +106,7 @@ def state_neg1_init():
     strip1.show_rainbow(20, 80)
     strip2.show_rainbow(180, 240)
     stateOfGame = -1
+    resetEggCount()
     resetGame = False
 
 def state1_init():
