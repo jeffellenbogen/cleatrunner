@@ -116,14 +116,12 @@ def state1_init():
 def state2_init():
     global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame, snakeEggCount
     snakeIcon()
-    resetEggCount()
     stateOfGame = 2
     clearBulletList()
 
 def state3_init():
     global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame, snakeEggCount
     snakeIcon()
-    resetEggCount()
     stateOfGame = 3
     clearBulletList()
     
@@ -144,6 +142,7 @@ def state4B_init():
     snakeLength = [8, 8, 5]
     snakeCanScoreLeft = [1, 1, 1]
     snakeCanScoreRight = [1, 1, 1]
+    resetEggCount()
     for index in range(3):
         spawnSnake(index)
         showSnake(index)     
@@ -158,7 +157,8 @@ def state5B_init():
     snakeIsAlive = [1, 1, 1]
     snakeLength = [8, 5, 8]
     snakeCanScoreLeft = [1, 1, 1]
-    snakeCanScoreRight = [1, 1, 1]    
+    snakeCanScoreRight = [1, 1, 1] 
+    resetEggCount()   
     for index in range(3):
         spawnSnake(index)
         showSnake(index)                   
