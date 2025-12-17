@@ -1,4 +1,3 @@
-# This is a new comment
 class Bullet():
     def __init__(self, snake):
         global snakeTrack, snakeDirection, snakePositionOfHead
@@ -108,6 +107,7 @@ def state_neg1_init():
     strip2.show_rainbow(180, 240)
     stateOfGame = -1
     resetGame = False
+    resetEggCount()
 
 def state1_init():
     snakeIcon()
@@ -557,7 +557,6 @@ def spawnSnake(snakeIndex: number):
                 break
             index += 1
         if not (snakeIsBlocked):
-            spawnSuccess = True
             #snake at snakeIndex has been spawned so send message to controller that that snake is alive (0 = dead, 1 = alive)
             if (snakeIndex==0):
                 radio.send_value("snake0lifeStatus", 1)
@@ -565,7 +564,8 @@ def spawnSnake(snakeIndex: number):
                 radio.send_value("snake1lifeStatus", 1)
             else:
                 radio.send_value("snake2lifeStatus", 1)
-
+            spawnSuccess = True
+            
 # This helper function is used to alter positionOfHead for the passed snakeIndex (0,1,or 2).
 def moveSnake(snakeIndex: number):
     # sets the snakePositionofHead for the current snakeIndex to the sum of the current position + direction. So this moves the head right by 1 if the direction is positive and left if the direction is negative.
