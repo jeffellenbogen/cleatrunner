@@ -1,3 +1,4 @@
+# This is a new comment
 class Bullet():
     def __init__(self, snake):
         global snakeTrack, snakeDirection, snakePositionOfHead
