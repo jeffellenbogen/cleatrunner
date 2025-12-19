@@ -463,7 +463,7 @@ def initLEDs():
 
       
 def showSnake(snakeIndex: number):
-    global stripArray, snakeTrack, snakeCanScoreRight, snakeCanScoreLeft, snakeIsAlive, 
+    global stripArray, snakeTrack, snakeCanScoreRight, snakeCanScoreLeft, snakeIsAlive 
     global snakePositionOfHead, snakeLength, snakeDirection
     tempTrack = snakeTrack[snakeIndex]
     stripArray[tempTrack].show_color(neopixel.colors(NeoPixelColors.BLACK))
