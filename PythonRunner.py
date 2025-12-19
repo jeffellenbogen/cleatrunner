@@ -559,11 +559,11 @@ def spawnSnake(snakeIndex: number):
         if not (snakeIsBlocked):
             #snake at snakeIndex has been spawned so send message to controller that that snake is alive (0 = dead, 1 = alive)
             if (snakeIndex==0):
-                radio.send_value("snake0lifeStatus", 1)
+                radio.send_value("sn0Life", 1)
             elif (snakeIndex==1):
-                radio.send_value("snake1lifeStatus", 1)
+                radio.send_value("sn1Life", 1)
             else:
-                radio.send_value("snake2lifeStatus", 1)
+                radio.send_value("sn2Life", 1)
             spawnSuccess = True
 
 # This helper function is used to alter positionOfHead for the passed snakeIndex (0,1,or 2).
@@ -602,15 +602,18 @@ def snakeFuneral(deadSnakeIndex: number):
     # Also, send message to the controler that the egg count is now 0
     if (deadSnakeIndex==0):
         snakeEggCount[0] = 0
-        radio.send_value("snake0lifeStatus", 0)
+        radio.send_value("sn0Life", 0)
+        basic.pause(10)
         radio.send_value("sn0Eggs", 0)
     elif (deadSnakeIndex==1):
         snakeEggCount[1] = 0
-        radio.send_value("snake1lifeStatus", 0)
+        radio.send_value("sn1Life", 0)
+        basic.pause(10)
         radio.send_value("sn1Eggs", 0)
     else:
         snakeEggCount[2] = 0
-        radio.send_value("snake2lifeStatus", 0)
+        radio.send_value("sn2Life", 0)
+        basic.pause(10)
         radio.send_value("sn2Eggs", 0)
 
     # Jump Track - if dead snake was on track1, we need to jump snakes to intersecting tracks so gameplay can continue.
