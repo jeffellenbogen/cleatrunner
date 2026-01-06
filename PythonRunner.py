@@ -28,7 +28,7 @@ class Bullet():
         self.nextMoveTime = input.running_time() + bulletDelayMS
 
     def checkForHit(self):
-        global bulletList, lastScoreChangeTimeMS
+        global bulletList, lastScoreChangeTimeMS, snakeScore, snakeIsAlive
         hitSnakeIndex = isPixelBlocked(self.currentPosition, self.track)
         if (hitSnakeIndex != -1):
             # Add 2 to the score of the snake who launched the bullet after a hit has occurred.
@@ -79,7 +79,8 @@ def checkForStatemate():
 ################################
 
 def state0_init():
-    global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakePositionOfHead, snakeDirection, snakeScore, snakeTrack, snakeIsAlive, endTimeOfCurrentStatems, stateOfGame
+    global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakePositionOfHead, snakeDirection
+    global snakeScore, snakeTrack, snakeIsAlive, endTimeOfCurrentStatems, stateOfGame
     snakeLength = [5, 8, 8]
     snakeCanScoreLeft = [1, 1, 1]
     snakeCanScoreRight = [1, 1, 1]
@@ -115,13 +116,13 @@ def state1_init():
     clearBulletList()
 
 def state2_init():
-    global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame, snakeEggCount
+    global stateOfGame
     snakeIcon()
     stateOfGame = 2
     clearBulletList()
 
 def state3_init():
-    global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame, snakeEggCount
+    global stateOfGame
     snakeIcon()
     stateOfGame = 3
     clearBulletList()
@@ -190,7 +191,7 @@ def state9_init():
 ################################
 
 def state0_run():
-    global countdownTimeRemainingms, stateOfGame
+    global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems
     countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
     if countdownTimeRemainingms >= 0:
         showCountdownTimer()
@@ -241,7 +242,7 @@ def state3_run():
         checkForStatemate()
 
 def state4A_run():
-    global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems, interRoundTimerLengthsecs
+    global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems
     countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
     if countdownTimeRemainingms > 0:
         flashWinningSnake()
@@ -251,7 +252,7 @@ def state4A_run():
         stateOfGame = 42
 
 def state4B_run():
-    global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems, interRoundTimerLengthsecs
+    global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems
     countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
     if countdownTimeRemainingms >= 0:
         showCountdownTimer()
@@ -262,7 +263,7 @@ def state4B_run():
 
 
 def state5A_run():
-    global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems, interRoundTimerLengthsecs
+    global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems
     countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
     if countdownTimeRemainingms > 0:
         flashWinningSnake()
@@ -272,7 +273,7 @@ def state5A_run():
         stateOfGame = 52
 
 def state5B_run():
-    global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems, interRoundTimerLengthsecs
+    global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems
     countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
     if countdownTimeRemainingms >= 0:
         showCountdownTimer()
@@ -283,7 +284,7 @@ def state5B_run():
       
 
 def state9_run():
-    global rangeSnake0Proportion, rangeSnake1Proportion, rangeSnake2Proportion, winningSnake
+    global rangeSnake0Proportion, rangeSnake1Proportion, rangeSnake2Proportion, winningSnake, resetGame
     if resetGame:
         state_neg1_init()
     else:
@@ -499,8 +500,6 @@ def showEverything():
         for tempTrack in range(0,3):
             snakeIndex = whichSnakeOnTrack(tempTrack)
             
-            stripArray[tempTrack].show_color(neopixel.colors(NeoPixelColors.BLACK))
-            #overwrite the strip to black WITHOUT showing the change yet.
             for tempPixel in range(0,trackLengths[tempTrack]):
                 stripArray[tempTrack].set_pixel_color(tempPixel,NeoPixelColors.BLACK)
 
