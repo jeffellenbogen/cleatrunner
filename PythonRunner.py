@@ -494,7 +494,7 @@ def flashWinningSnake():
         stripArray[snakeTrack[getRoundWinner()]].show_color(neopixel.colors(NeoPixelColors.BLACK))
 
 def showEverything():
-    global stripArray, bulletList, displayUpdateNeeded
+    global stripArray, bulletList, displayUpdateNeeded, snakeCanScoreLeft, snakeCanScoreRight, snakeIsAlive, snakePositionOfHead
     if (displayUpdateNeeded):
         for tempTrack in range(0,3):
             snakeIndex = whichSnakeOnTrack(tempTrack)
@@ -627,7 +627,7 @@ def snakeFuneral(deadSnakeIndex: number):
         snakeTrack[jumpingSnakeIndex] = 1
         spawnSnake(jumpingSnakeIndex)
         showSnake(jumpingSnakeIndex)
-    basic.pause(5000)
+
 
 def returnSnakeHeadColor(snakeIndex: number):
     if snakeIndex == 0:
