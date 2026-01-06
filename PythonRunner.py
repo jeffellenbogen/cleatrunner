@@ -597,6 +597,7 @@ def growSnake(snakeIndex: number):
 def snakeFuneral(deadSnakeIndex: number):
     global jumpingSnakeIndex, snakeTrack, snakeIsAlive, snakeLength
     # showSnake to erase the snake that has died
+    basic.pause(5000)
     showSnake(deadSnakeIndex)
     # Set the egg count in the game to zero for the dead snake. Snakes do NOT get to keep eggs for future rounds when they die.
     # Then, send message to the controller for the dead snake that it is dead
