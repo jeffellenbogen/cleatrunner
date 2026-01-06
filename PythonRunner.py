@@ -499,7 +499,7 @@ def showEverything():
         for tempTrack in range(0,3):
             snakeIndex = whichSnakeOnTrack(tempTrack)
             
-            #stripArray[tempTrack].show_color(neopixel.colors(NeoPixelColors.BLACK))
+            stripArray[tempTrack].show_color(neopixel.colors(NeoPixelColors.BLACK))
             #overwrite the strip to black WITHOUT showing the change yet.
             for tempPixel in range(0,trackLengths[tempTrack]):
                 stripArray[tempTrack].set_pixel_color(tempPixel,NeoPixelColors.BLACK)
