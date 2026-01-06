@@ -595,7 +595,7 @@ def growSnake(snakeIndex: number):
 
 
 def snakeFuneral(deadSnakeIndex: number):
-    global jumpingSnakeIndex, snakeTrack, snakeIsAlive, snakeLength
+    global snakeTrack, snakeIsAlive, snakeLength
     # showSnake to erase the snake that has died
     showSnake(deadSnakeIndex)
     # Set the egg count in the game to zero for the dead snake. Snakes do NOT get to keep eggs for future rounds when they die.
@@ -628,7 +628,7 @@ def snakeFuneral(deadSnakeIndex: number):
         spawnSnake(jumpingSnakeIndex)
         showSnake(jumpingSnakeIndex)
     basic.pause(5000)
-    
+
 def returnSnakeHeadColor(snakeIndex: number):
     if snakeIndex == 0:
         return neopixel.rgb(0, 255, 0)
@@ -883,7 +883,6 @@ scoreProportionSnake2 = 0
 scoreProportionSnake1 = 0
 scoreProportionSnake0 = 0
 trackFrictionCoefficients: List[number] = []
-jumpingSnakeIndex = 0
 tempPixel = 0
 snakeIsBlocked = False
 rightEdgeOfSnake = 0
