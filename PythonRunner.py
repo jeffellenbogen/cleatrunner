@@ -616,7 +616,7 @@ def snakeFuneral(deadSnakeIndex: number):
         radio.send_value("sn2Life", 0)
         basic.pause(10)
         radio.send_value("sn2Eggs", 0)
-    basic.pause(5000)
+
     # Jump Track - if dead snake was on track1, we need to jump snakes to intersecting tracks so gameplay can continue.
     if snakeTrack[deadSnakeIndex] == 1:
         jumpingSnakeIndex = whichSnakeOnTrack(0)
@@ -627,7 +627,8 @@ def snakeFuneral(deadSnakeIndex: number):
         snakeTrack[jumpingSnakeIndex] = 1
         spawnSnake(jumpingSnakeIndex)
         showSnake(jumpingSnakeIndex)
-
+    basic.pause(5000)
+    
 def returnSnakeHeadColor(snakeIndex: number):
     if snakeIndex == 0:
         return neopixel.rgb(0, 255, 0)
