@@ -598,7 +598,6 @@ def snakeFuneral(deadSnakeIndex: number):
     global jumpingSnakeIndex, snakeTrack, snakeIsAlive, snakeLength
     # showSnake to erase the snake that has died
     showSnake(deadSnakeIndex)
-    basic.pause(5000)
     # Set the egg count in the game to zero for the dead snake. Snakes do NOT get to keep eggs for future rounds when they die.
     # Then, send message to the controller for the dead snake that it is dead
     # Also, send message to the controler that the egg count is now 0
@@ -617,7 +616,7 @@ def snakeFuneral(deadSnakeIndex: number):
         radio.send_value("sn2Life", 0)
         basic.pause(10)
         radio.send_value("sn2Eggs", 0)
-
+    basic.pause(5000)
     # Jump Track - if dead snake was on track1, we need to jump snakes to intersecting tracks so gameplay can continue.
     if snakeTrack[deadSnakeIndex] == 1:
         jumpingSnakeIndex = whichSnakeOnTrack(0)
@@ -639,7 +638,7 @@ def returnSnakeHeadColor(snakeIndex: number):
 
 def returnSnakeBodyColor(snakeIndex: number):
     if snakeIndex == 0:
-        return neopixel.rgb(200, 0, 200)
+        return neopixel.rgb(50, 255, 0)
     elif snakeIndex == 1:
         return neopixel.rgb(120, 160, 0)
     else:
