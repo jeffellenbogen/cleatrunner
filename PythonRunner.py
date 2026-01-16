@@ -61,7 +61,7 @@ def resetEggCount():
     radio.send_value("sn1Eggs", 0)
     radio.send_value("sn2Eggs", 0)
 
-def checkForStatemate():
+def checkForStalemate():
     global lastScoreChangeTimeMS, snakeCanScoreLeft, snakeCanScoreRight
     if (input.running_time()>lastScoreChangeTimeMS+15000):
         lastScoreChangeTimeMS = input.running_time()
@@ -219,7 +219,7 @@ def state1_run():
         checkAllSnakesForMovement()
         checkAllBulletsForMovement()
         showEverything()
-        checkForStatemate()
+        checkForStalemate()
 
 def state2_run():
     global stateOfGame
@@ -230,7 +230,7 @@ def state2_run():
         checkAllSnakesForMovement()
         checkAllBulletsForMovement()
         showEverything()
-        checkForStatemate()
+        checkForStalemate()
 
 def state3_run():
     if currentTotalSnakesAlive() <= 1:
@@ -239,7 +239,7 @@ def state3_run():
         checkAllSnakesForMovement()
         checkAllBulletsForMovement()
         showEverything()
-        checkForStatemate()
+        checkForStalemate()
 
 def state4A_run():
     global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems
@@ -467,12 +467,12 @@ def showSnake(snakeIndex: number):
     global stripArray, snakeTrack, snakeCanScoreRight, snakeCanScoreLeft, snakeIsAlive 
     global snakePositionOfHead, snakeLength, snakeDirection
     tempTrack = snakeTrack[snakeIndex]
-    stripArray[tempTrack].show_color(neopixel.colors(NeoPixelColors.BLACK))
-    if snakeCanScoreLeft[snakeIndex]:
-        stripArray[tempTrack].set_pixel_color(0,NeoPixelColors.WHITE)
-    if snakeCanScoreRight[snakeIndex]:
-        stripArray[tempTrack].set_pixel_color(trackLengths[tempTrack]-1,NeoPixelColors.WHITE)
+    stripArray[tempTrack].clear()
     if snakeIsAlive[snakeIndex] != 0:
+        if snakeCanScoreLeft[snakeIndex]:
+            stripArray[tempTrack].set_pixel_color(0,NeoPixelColors.WHITE)
+        if snakeCanScoreRight[snakeIndex]:
+            stripArray[tempTrack].set_pixel_color(trackLengths[tempTrack]-1,NeoPixelColors.WHITE)
         currentPixel = snakePositionOfHead[snakeIndex]
         # Sets the current snake's head color
         stripArray[tempTrack].set_pixel_color(currentPixel, returnSnakeHeadColor(snakeIndex))
