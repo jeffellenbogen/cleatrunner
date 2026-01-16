@@ -499,7 +499,7 @@ def showEverything():
     if (displayUpdateNeeded):
         for tempTrack in range(0,3):
             snakeIndex = whichSnakeOnTrack(tempTrack)
-            if (snakeIndex == -1)
+            if (snakeIndex == -1):
                 continue
             for tempPixel in range(0,trackLengths[tempTrack]):
                 stripArray[tempTrack].set_pixel_color(tempPixel,NeoPixelColors.BLACK)
