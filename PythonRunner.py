@@ -28,7 +28,7 @@ class Bullet():
         self.nextMoveTime = input.running_time() + bulletDelayMS
 
     def checkForHit(self):
-        global bulletList, lastScoreChangeTimeMS
+        global bulletList, lastScoreChangeTimeMS, snakeScore, snakeIsAlive
         hitSnakeIndex = isPixelBlocked(self.currentPosition, self.track)
         if (hitSnakeIndex != -1):
             # Add 2 to the score of the snake who launched the bullet after a hit has occurred.
@@ -61,7 +61,7 @@ def resetEggCount():
     radio.send_value("sn1Eggs", 0)
     radio.send_value("sn2Eggs", 0)
 
-def checkForStatemate():
+def checkForStalemate():
     global lastScoreChangeTimeMS, snakeCanScoreLeft, snakeCanScoreRight
     if (input.running_time()>lastScoreChangeTimeMS+15000):
         lastScoreChangeTimeMS = input.running_time()
@@ -79,7 +79,8 @@ def checkForStatemate():
 ################################
 
 def state0_init():
-    global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakePositionOfHead, snakeDirection, snakeScore, snakeTrack, snakeIsAlive, endTimeOfCurrentStatems, stateOfGame
+    global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakePositionOfHead, snakeDirection
+    global snakeScore, snakeTrack, snakeIsAlive, endTimeOfCurrentStatems, stateOfGame
     snakeLength = [5, 8, 8]
     snakeCanScoreLeft = [1, 1, 1]
     snakeCanScoreRight = [1, 1, 1]
@@ -115,13 +116,13 @@ def state1_init():
     clearBulletList()
 
 def state2_init():
-    global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame, snakeEggCount
+    global stateOfGame
     snakeIcon()
     stateOfGame = 2
     clearBulletList()
 
 def state3_init():
-    global snakeLength, snakeCanScoreLeft, snakeCanScoreRight, snakeTrack, snakeIsAlive, stateOfGame, snakeEggCount
+    global stateOfGame
     snakeIcon()
     stateOfGame = 3
     clearBulletList()
@@ -190,7 +191,7 @@ def state9_init():
 ################################
 
 def state0_run():
-    global countdownTimeRemainingms, stateOfGame
+    global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems
     countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
     if countdownTimeRemainingms >= 0:
         showCountdownTimer()
@@ -218,7 +219,7 @@ def state1_run():
         checkAllSnakesForMovement()
         checkAllBulletsForMovement()
         showEverything()
-        checkForStatemate()
+        checkForStalemate()
 
 def state2_run():
     global stateOfGame
@@ -229,7 +230,7 @@ def state2_run():
         checkAllSnakesForMovement()
         checkAllBulletsForMovement()
         showEverything()
-        checkForStatemate()
+        checkForStalemate()
 
 def state3_run():
     if currentTotalSnakesAlive() <= 1:
@@ -238,10 +239,10 @@ def state3_run():
         checkAllSnakesForMovement()
         checkAllBulletsForMovement()
         showEverything()
-        checkForStatemate()
+        checkForStalemate()
 
 def state4A_run():
-    global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems, interRoundTimerLengthsecs
+    global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems
     countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
     if countdownTimeRemainingms > 0:
         flashWinningSnake()
@@ -251,7 +252,7 @@ def state4A_run():
         stateOfGame = 42
 
 def state4B_run():
-    global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems, interRoundTimerLengthsecs
+    global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems
     countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
     if countdownTimeRemainingms >= 0:
         showCountdownTimer()
@@ -262,7 +263,7 @@ def state4B_run():
 
 
 def state5A_run():
-    global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems, interRoundTimerLengthsecs
+    global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems
     countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
     if countdownTimeRemainingms > 0:
         flashWinningSnake()
@@ -272,7 +273,7 @@ def state5A_run():
         stateOfGame = 52
 
 def state5B_run():
-    global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems, interRoundTimerLengthsecs
+    global countdownTimeRemainingms, stateOfGame, endTimeOfCurrentStatems
     countdownTimeRemainingms = endTimeOfCurrentStatems - input.running_time()
     if countdownTimeRemainingms >= 0:
         showCountdownTimer()
@@ -283,7 +284,7 @@ def state5B_run():
       
 
 def state9_run():
-    global rangeSnake0Proportion, rangeSnake1Proportion, rangeSnake2Proportion, winningSnake
+    global rangeSnake0Proportion, rangeSnake1Proportion, rangeSnake2Proportion, winningSnake, resetGame
     if resetGame:
         state_neg1_init()
     else:
@@ -466,12 +467,12 @@ def showSnake(snakeIndex: number):
     global stripArray, snakeTrack, snakeCanScoreRight, snakeCanScoreLeft, snakeIsAlive 
     global snakePositionOfHead, snakeLength, snakeDirection
     tempTrack = snakeTrack[snakeIndex]
-    stripArray[tempTrack].show_color(neopixel.colors(NeoPixelColors.BLACK))
-    if snakeCanScoreLeft[snakeIndex]:
-        stripArray[tempTrack].set_pixel_color(0,NeoPixelColors.WHITE)
-    if snakeCanScoreRight[snakeIndex]:
-        stripArray[tempTrack].set_pixel_color(trackLengths[tempTrack]-1,NeoPixelColors.WHITE)
+    stripArray[tempTrack].clear()
     if snakeIsAlive[snakeIndex] != 0:
+        if snakeCanScoreLeft[snakeIndex]:
+            stripArray[tempTrack].set_pixel_color(0,NeoPixelColors.WHITE)
+        if snakeCanScoreRight[snakeIndex]:
+            stripArray[tempTrack].set_pixel_color(trackLengths[tempTrack]-1,NeoPixelColors.WHITE)
         currentPixel = snakePositionOfHead[snakeIndex]
         # Sets the current snake's head color
         stripArray[tempTrack].set_pixel_color(currentPixel, returnSnakeHeadColor(snakeIndex))
@@ -494,13 +495,12 @@ def flashWinningSnake():
         stripArray[snakeTrack[getRoundWinner()]].show_color(neopixel.colors(NeoPixelColors.BLACK))
 
 def showEverything():
-    global stripArray, bulletList, displayUpdateNeeded
+    global stripArray, bulletList, displayUpdateNeeded, snakeCanScoreLeft, snakeCanScoreRight, snakeIsAlive, snakePositionOfHead
     if (displayUpdateNeeded):
         for tempTrack in range(0,3):
             snakeIndex = whichSnakeOnTrack(tempTrack)
-            
-            #stripArray[tempTrack].show_color(neopixel.colors(NeoPixelColors.BLACK))
-            #overwrite the strip to black WITHOUT showing the change yet.
+            if (snakeIndex == -1):
+                continue
             for tempPixel in range(0,trackLengths[tempTrack]):
                 stripArray[tempTrack].set_pixel_color(tempPixel,NeoPixelColors.BLACK)
 
@@ -595,7 +595,7 @@ def growSnake(snakeIndex: number):
 
 
 def snakeFuneral(deadSnakeIndex: number):
-    global jumpingSnakeIndex, snakeTrack, snakeIsAlive, snakeLength
+    global snakeTrack, snakeIsAlive, snakeLength
     # showSnake to erase the snake that has died
     showSnake(deadSnakeIndex)
     # Set the egg count in the game to zero for the dead snake. Snakes do NOT get to keep eggs for future rounds when they die.
@@ -618,19 +618,21 @@ def snakeFuneral(deadSnakeIndex: number):
         radio.send_value("sn2Eggs", 0)
 
     # Jump Track - if dead snake was on track1, we need to jump snakes to intersecting tracks so gameplay can continue.
-    if snakeTrack[deadSnakeIndex] == 1:
+    if snakeTrack[deadSnakeIndex] == 1:    
         jumpingSnakeIndex = whichSnakeOnTrack(0)
-        snakeIsAlive[jumpingSnakeIndex] = 0
-        showSnake(jumpingSnakeIndex)
-        snakeIsAlive[jumpingSnakeIndex] = 1
-        snakeLength[jumpingSnakeIndex] = 2 * snakeLength[jumpingSnakeIndex]
-        snakeTrack[jumpingSnakeIndex] = 1
-        spawnSnake(jumpingSnakeIndex)
-        showSnake(jumpingSnakeIndex)
+        if (jumpingSnakeIndex != -1):
+            snakeIsAlive[jumpingSnakeIndex] = 0
+            showSnake(jumpingSnakeIndex)
+            snakeIsAlive[jumpingSnakeIndex] = 1
+            snakeLength[jumpingSnakeIndex] = 2 * snakeLength[jumpingSnakeIndex]
+            snakeTrack[jumpingSnakeIndex] = 1
+            spawnSnake(jumpingSnakeIndex)
+            showSnake(jumpingSnakeIndex)
+
 
 def returnSnakeHeadColor(snakeIndex: number):
     if snakeIndex == 0:
-        return neopixel.rgb(255, 0, 0)
+        return neopixel.rgb(0, 255, 0)
     elif snakeIndex == 1:
         return neopixel.rgb(0, 200, 50)
     else:
@@ -638,7 +640,7 @@ def returnSnakeHeadColor(snakeIndex: number):
 
 def returnSnakeBodyColor(snakeIndex: number):
     if snakeIndex == 0:
-        return neopixel.rgb(200, 0, 200)
+        return neopixel.rgb(50, 255, 0)
     elif snakeIndex == 1:
         return neopixel.rgb(120, 160, 0)
     else:
@@ -882,7 +884,6 @@ scoreProportionSnake2 = 0
 scoreProportionSnake1 = 0
 scoreProportionSnake0 = 0
 trackFrictionCoefficients: List[number] = []
-jumpingSnakeIndex = 0
 tempPixel = 0
 snakeIsBlocked = False
 rightEdgeOfSnake = 0
