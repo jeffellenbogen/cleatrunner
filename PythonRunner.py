@@ -632,7 +632,7 @@ def snakeFuneral(deadSnakeIndex: number):
 
 def returnSnakeHeadColor(snakeIndex: number):
     if snakeIndex == 0:
-        return neopixel.rgb(0, 255, 0)
+        return neopixel.rgb(255, 0, 0)
     elif snakeIndex == 1:
         return neopixel.rgb(0, 200, 50)
     else:
